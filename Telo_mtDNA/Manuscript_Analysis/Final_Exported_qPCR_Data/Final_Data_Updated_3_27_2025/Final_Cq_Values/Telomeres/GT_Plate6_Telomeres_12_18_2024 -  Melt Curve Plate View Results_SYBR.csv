@@ -1,0 +1,33 @@
+,,1,2,3,4,5,6,7,8,9,10,11,12
+A,Content,Std-1,Std-1,,,,,Unkn-17,Unkn-17,Unkn-25,Unkn-25,Unkn-33,Unkn-33
+A,Sample,STD1,STD1,,,,,9.2_B,9.2_B,10.3_C,10.3_C,11.4_B,11.4_B
+A,Peak 1,78,78,,,,,75,75,77,77,75,75
+A,Peak 2,None,None,,,,,None,None,None,None,None,None
+B,Content,Std-2,Std-2,,,Unkn-10,Unkn-10,Unkn-18,Unkn-18,Unkn-26,Unkn-26,Unkn-34,Unkn-34
+B,Sample,STD2,STD2,,,10.5_C,10.5_C,7.5_B,7.5_B,11.3_C,11.3_C,10.4_A,10.4_A
+B,Peak 1,78,78,,,75,75,75,75,75,75,77.5,77
+B,Peak 2,None,None,,,None,None,None,None,None,None,None,None
+C,Content,Std-3,Std-3,,,Unkn-11,Unkn-11,Unkn-19,Unkn-19,,,Unkn-35,Unkn-35
+C,Sample,STD3,STD3,,,15.5_C,15.5_C,6.5_B,6.5_B,,,7.2_A,7.2_A
+C,Peak 1,78,78,,,75,75,75.5,75,,,77,77
+C,Peak 2,None,None,,,None,None,None,None,,,None,None
+D,Content,Std-4,Std-4,Unkn-4,Unkn-4,Unkn-12,Unkn-12,,,,,Unkn-36,Unkn-36
+D,Sample,STD4,STD4,9.3_D,9.3_D,10.2_C,10.2_C,,,,,5.6_B,5.6_B
+D,Peak 1,78,78,75,75,75.5,75.5,,,,,77,77
+D,Peak 2,None,None,None,None,None,None,,,,,None,None
+E,Content,,,Unkn-5,Unkn-5,Unkn-13,Unkn-13,Unkn-21,Unkn-21,Unkn-29,Unkn-29,Unkn-37,Unkn-37
+E,Sample,,,12.5_D,12.5_D,6.5_C,6.5_C,3.4_D,3.4_D,10.5_A,10.5_A,9.2_D,9.2_D
+E,Peak 1,,,75,75,75,75,75,75,77,77,77,77.5
+E,Peak 2,,,None,None,None,None,None,None,None,None,None,None
+F,Content,,,Unkn-6,Unkn-6,Unkn-14,Unkn-14,Unkn-22,Unkn-22,Unkn-30,Unkn-30,Unkn-38,Unkn-38
+F,Sample,,,5.2_A,5.2_A,5.4_A,5.4_A,13.1_B,13.1_B,6.2_D,6.2_D,13.2_A,13.2_A
+F,Peak 1,,,75,75,75,77,76.5,76.5,75,75,77,77.5
+F,Peak 2,,,None,None,None,None,None,None,None,None,None,None
+G,Content,,,Unkn-7,Unkn-7,Unkn-15,Unkn-15,Unkn-23,Unkn-23,Unkn-31,Unkn-31,,
+G,Sample,,,6.3_A,6.3_A,2.3_B,2.3_B,12.4_C,12.4_C,5.2_D,5.2_D,,
+G,Peak 1,,,75,75,75,75,75,75,75,75,,
+G,Peak 2,,,None,None,None,None,None,None,None,None,,
+H,Content,NTC-1,NTC-1,Unkn-8,Unkn-8,Unkn-16,Unkn-16,,,Unkn-32,Unkn-32,Unkn-40,Unkn-40
+H,Sample,NEG,NEG,9.3_B,9.3_B,7.4_B,7.4_B,,,6.3_C,6.3_C,15.5_D,15.5_D
+H,Peak 1,78,78,75,75,75,75,,,75,75,75,75
+H,Peak 2,None,None,None,None,None,None,,,None,None,None,None

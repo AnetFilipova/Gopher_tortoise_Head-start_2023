@@ -1,0 +1,61 @@
+Rack,Tank,Clutch_ID,Tortoise_Mass,Max_allowed_blood_volume,Collected_Blood_Volume,Total_bleed_time,Bleed_Finish_Time,Whole_Blood_for_RNA,Whole_Blood_for_DNA,Plasma_(P1),Plasma_(P2),Plasma_(P3),RBC_(plasma_removed),Glucose,Date,Notes (LN=liquid nitrogen); time in hour:minutes
+1,1,13.1,103.8,1038,300,3:22,10:40,Yes,Yes,Yes,Yes,Yes,Yes,93,3/19/2024,did not catch the volume before it was deposited into RBC tube but it was >300 and within limits
+1,1,7.5,81.1,811,220,6:29,10:35,Yes,Yes,Yes,Yes,Yes,Yes,85,3/19/2024,
+1,1,10.4,72.2,722,500,9:21,10:38,Yes,Yes,Yes,Yes,Yes,Yes,147,3/19/2024,
+1,1,15.2,86.2,862,340,4:00,10:47,Yes,Yes,Yes,Yes,Yes,Yes,133,3/19/2024,"RBC lysed, slightly red in P1, P2, P3"
+1,1,5.4,90.9,909,450,2:11,10:41,Yes,Yes,Yes,Yes,Yes,Yes,91,3/19/2024,
+1,1,3.2,87.7,877,220,7:50,10:49,Yes,Yes,Yes,Yes,Yes,Yes,136,3/19/2024,
+3,2,7.4,111.5,1115,280,4:15,10:56,Yes,Yes,Yes,Yes,Yes,Yes,129,3/19/2024,
+3,2,13.2,148.1,1481,550,2:22,10:53,Yes,Yes,Yes,Yes,Yes,Yes,94,3/19/2024,
+3,2,15.3,141.4,1414,400,5:00,11:00,Yes,Yes,Yes,Yes,Yes,Yes,107,3/19/2024,
+3,2,5.5,168.1,1681,500,3:30,10:55,Yes,Yes,Yes,Yes,Yes,Yes,77,3/19/2024,
+3,2,10.5,120,1200,350,5:37,11:02,Yes,Yes,Yes,Yes,Yes,Yes,127,3/19/2024,
+3,2,8.1,139.4,1394,100,8:20,11:05,Yes,Yes,No,No,No,WB,154,3/19/2024,not enough blood; WB was snap-frozen
+1,3,5.6,88.7,887,600,2:30,11:11,Yes,Yes,Yes,Yes,Yes,Yes,130,3/19/2024,"slightly red, lysed in P1, P2, P3"
+1,3,2.2,84.8,848,500,2:37,11:07,Yes,Yes,Yes,Yes,Yes,Yes,112,3/19/2024,
+1,3,13.3,75.7,757,300,2:00,11:07,Yes,Yes,Yes,Yes,Yes,Yes,87,3/19/2024,
+1,3,8.2,100,1000,210,7:40,11:17,Yes,Yes,Yes,Yes,Yes,Yes,128,3/19/2024,P1 and P2 slightly red (lysed); very little plasma in P3
+1,3,10.6,81,810,380,4:25,11:16,Yes,Yes,Yes,Yes,Yes,Yes,92,3/19/2024,
+1,3,15.4,81.3,813,110,9:45,11:19,Yes,Yes,Yes,No,No,Yes,82,3/19/2024,lysed RBC after centrifuged; plasma was red
+3,5,9.2,122.3,1223,200,6:40,11:28,Yes,Yes,Yes,Yes,Yes,Yes,110,3/19/2024,P3 was red; RBC lysed
+3,5,2.4,156.6,1566,500,2:45,11:27,Yes,Yes,Yes,Yes,Yes,Yes,117,3/19/2024,
+3,5,11.2,136.1,1361,500,3:05,11:29,Yes,Yes,Yes,Yes,Yes,Yes,118,3/19/2024,
+3,5,13.4,143,1430,300,3:33,11:31,Yes,Yes,Yes,Yes,No,Yes,108,3/19/2024,very clotted; less plasma; RBC lysed
+3,5,6.2,155,1550,490,2:28,11:24,Yes,Yes,Yes,Yes,No,Yes,85,3/19/2024,
+3,5,15.5,106.8,1068,380,1:55,11:24,Yes,Yes,Yes,Yes,Yes,Yes,95,3/19/2024,
+1,6,12.4,91.8,918,250,2:55,11:36,Yes,Yes,Yes,Yes,Yes,Yes,121,3/19/2024,
+1,6,17.2,103.6,1036,420,2:36,11:40,Yes,Yes,Yes,Yes,Yes,Yes,112,3/19/2024,
+1,6,9.3,97.8,978,530,3:17,11:37,Yes,Yes,Yes,Yes,Yes,Yes,90,3/19/2024,
+1,6,6.3,92.5,925,480,4:31,11:43,Yes,Yes,Yes,Yes,Yes,Yes,89,3/19/2024,
+1,6,3.1,97.6,976,400,3:20,11:45,Yes,Yes,Yes,Yes,Yes,Yes,123,3/19/2024,
+1,6,11.3,90,900,105,8:20,10:43,Yes,Yes,No,No,No,Yes,113,3/19/2024,
+2,8,9.5,167.3,1673,305,5:29,11:58,Yes,Yes,Yes,Yes,Yes,Yes,126,3/19/2024,
+2,8,11.4,149.3,1493,100,3:10,11:50,Yes,Yes,Yes,Yes,Yes,Yes,77,3/19/2024,
+2,8,3.3,127.2,1272,510,6:40,11:58,Yes,Yes,Yes,Yes,Yes,Yes,207,3/19/2024,
+2,8,17.3,206.9,2069,400,2:44,11:51,Yes,Yes,Yes,Yes,Yes,Yes,79,3/19/2024,
+2,8,6.5,168.3,1683,600,3:15,11:55,Yes,Yes,Yes,Yes,Yes,Yes,97,3/19/2024,
+2,8,12.2,131.3,1313,560,2:28,11:50,Yes,Yes,Yes,Yes,Yes,Yes,92,3/19/2024,
+4,9,3.4,85.6,856,420,3:58,12:12,Yes,Yes,Yes,Yes,Yes,Yes,117,3/19/2024,blood clotted
+4,9,9.6,87.8,878,380,2:44,12:09,Yes,Yes,Yes,Yes,Yes,Yes,101,3/19/2024,
+4,9,7.1,67.6,676,400,1:54,12:11,Yes,Yes,Yes,Yes,Yes,Yes,117,3/19/2024,
+4,9,17.4,86.4,864,580,3:02,12:05,Yes,Yes,Yes,Yes,Yes,Yes,87,3/19/2024,
+4,9,6.4,91,910,300,3:30,12:05,Yes,Yes,Yes,Yes,Yes,Yes,100,3/19/2024,Use P2 instead of P1;RBC were lysed
+4,9,11.1,92.6,926,200,5:16,12:06,Yes,Yes,Yes,Yes,Yes,Yes,125,3/19/2024,"RBC lysed, plasma was red"
+3,10,12.6,123.9,1239,500,2:31,12:22,Yes,Yes,Yes,Yes,Yes,Yes,109,3/19/2024,
+3,10,5.1,221.5,2215,600,3:12,12:17,Yes,Yes,Yes,Yes,Yes,Yes,86,3/19/2024,
+3,10,17.5,137.9,1379,420,4:18,12:17,Yes,Yes,Yes,Yes,Yes,Yes,100,3/19/2024,
+3,10,7.2,123.7,1237,400,2:46,12:16,Yes,Yes,Yes,Yes,Yes,Yes,82,3/19/2024,
+3,10,9.4,129.4,1294,400,2:56,12:23,Yes,Yes,Yes,Yes,Yes,Yes,135,3/19/2024,
+3,10,10.1,145.8,1458,400,5:30,12:26,Yes,Yes,Yes,Yes,Yes,Yes,94,3/19/2024,"P3 slightly red, RBC lysed"
+4,11,7.3,68.7,687,300,2:40,12:27,Yes,Yes,Yes,Yes,Yes,Yes,72,3/19/2024,
+4,11,14.5,92.7,927,470,3:42,12:32,Yes,Yes,Yes,Yes,Yes,Yes,114,3/19/2024,
+4,11,5.2,94.8,948,600,1:42,12:27,Yes,Yes,Yes,Yes,Yes,Yes,90,3/19/2024,
+4,11,12.5,75,750,260,2:57,12:45,Yes,Yes,Yes,Yes,Yes,Yes,103,3/19/2024,bled after buried deeply and likely not disturbed before caught
+4,11,10.2,60,600,440,2:45,12:31,Yes,Yes,Yes,Yes,Yes,Yes,102,3/19/2024,
+4,11,2.3,72.4,724,380,1:58,12:30,Yes,Yes,Yes,Yes,Yes,Yes,94,3/19/2024,
+2,12,14.4,131,1310,550,2:27,12:36,Yes,Yes,Yes,Yes,Yes,Yes,95,3/19/2024,"RNA went into DNA LN tank, still in the right tube though so it is cool"
+2,12,6.1,93.6,936,,,,,,,,,,,3/19/2024,excluded from the experiment so no blood was taken
+2,12,15.1,133,1330,400,4:09,12:38,Yes,Yes,Yes,Yes,Yes,Yes,111,3/19/2024,
+2,12,10.3,112,1120,320,2:49,12:41,Yes,Yes,Yes,Yes,Yes,Yes,90,3/19/2024,"clotted, slightly red plasma "
+2,12,9.1,154.1,1541,500,2:11,12:40,Yes,Yes,Yes,Yes,Yes,Yes,125,3/19/2024,
+2,12,5.3,307.8,3078,440,4:30,12:39,Yes,Yes,Yes,Yes,Yes,Yes,125,3/19/2024,

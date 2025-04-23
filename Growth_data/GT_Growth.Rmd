@@ -1,0 +1,531 @@
+---
+title: "Exploring the effects of first-year cold dormancy on growth trajectories in head-started Gopher tortoises"
+author: "Anet Filipova"
+date: "2025-04-22"
+output:
+  md_document:
+    variant: gfm
+  pdf_document:
+  word_document:
+  html_document:
+---
+```{r setup, include=FALSE, tidy.opts = list(width.cutoff = 100), tidy = TRUE}
+knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.height = 5,
+  dpi = 300,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+
+# Load libraries
+library(formatR)
+```
+
+```{r eval=FALSE, include=FALSE}
+rm(list = ls(all=TRUE)) # removes all variables in the global environment so you start fresh
+
+Sys.time() # prints out the time and date you ran the code
+```
+### Loading all the libraries that will be used in this code
+```{r Libraries, include=TRUE, message=FALSE, warning=FALSE}
+library(lme4) ## Will be used for mixed effect models with random and fixed effects 
+library(emmeans) ## Will be used for post-hoc comparisons
+library(ggplot2) ## Will be used for making graphs/data visualization 
+library(dplyr) ## Will be used for specifying logical operators
+library(ggpubr) ## Will be used for combining individual plots into one plot
+library(tidyr) ## Will be used for reshaping the data for easier visualization later on
+library(ggrepel) ## Will be used to label individual points on the plots
+```
+# Data Preparation
+```{r echo=TRUE, include=TRUE}
+datum <- read.csv("Data/Growth_data_Working.csv", na.strings = "na") # Reading the data
+```
+
+### Filter out individuals where Tortoise_ID is equal to "Not_Viable" as well as specific IDs that need to be removed from the analyses. To remove those individuals, we will use the 'subset' function. The logical operator "%in%" checks if elements of Tortoise_ID are present in the given vector c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04"). The operator "!" returns the values from the column 'Tortoise_ID' that are NOT equal to any of the elements in the specified vector.
+```{r}
+datum <- subset(datum, !(Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", 
+"GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04")))
+```
+# Data Analysis
+# Question 1: What is the growth rate of animals before cold dormancy treatment?
+
+### We will run a linear mixed-effect model with Treatment as a fixed effect and Nest_ID and Tank as a random effects. If individuals from the same nest are more similar to each other than to individuals from different nests, treating Nest_ID as a random effect accounts for this correlation, avoiding pseudoreplication. The statistical reason is that if animals within the same tank grow similarly due to shared conditions, treating tank as a random effect accounts for environmental clustering, preventing false inflation of significance.
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+model_before <- lmer(Growth_rate_Before ~ Treatment + (1 | Nest_ID) + (1 | Tank),
+data = datum)
+
+# Show summary statistics
+summary(model_before) 
+
+# Printing the 2.5% lower confidence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval.
+confint(model_before) # The 95% CI is 0.04529415
+
+# Post-hoc comparisons between treatments
+emmeans(model_before, pairwise ~ Treatment)
+```
+
+### Checking for outliers with z-scores > 3 meaning more than 3 standard deviations away from the mean, which is considered a stronger outlier. This will be done for all the models below for each respective timepoint.
+```{r}
+datum <- datum %>%
+  mutate(z_score = (Growth_rate_Before - mean(Growth_rate_Before, na.rm = TRUE)) / 
+  sd(Growth_rate_Before, na.rm = TRUE))
+
+# Filter out outliers based on Tortoise_ID
+outliers_before_tortoise <- datum %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Growth_rate_Before, z_score)
+
+# Print the outliers corresponding to individual Tortoise_ID
+print(outliers_before_tortoise) # There are no outliers
+```
+# Plotting the data for Question 1
+```{r}
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+"#D55E00", "#CC79A7")
+
+before <- ggplot(datum, aes(x = Treatment, y = Growth_rate_Before, color = Treatment)) +
+  geom_boxplot(position = position_dodge(0.85)) + 
+  geom_jitter(width = 0.10, alpha = 0.5, size = 2) +
+  geom_text_repel(aes(label = Tank), size = 4, box.padding = 0.4, point.padding = 0.3, 
+                  max.overlaps = 20) +
+  ylab("Growth Rate (g/day)") +
+  xlab("Treatment") +
+  scale_color_manual(values = c(cbbPalette[[6]], cbbPalette[[7]]), name = "",
+                     labels = c("", "")) +
+  theme_classic() +  
+  theme(strip.background = element_blank(), legend.position = "none",
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 14)   
+  )  
+before
+
+# Save file as PNG for final figure production
+ggsave(before, file="Growth_rate_Before.png", width=9, height=7, dpi=600)
+```
+# Question 2: What is the effect of treatment on growth rate during dormancy?
+
+###  Mixed effect model with Treatment as a fixed effect and Nest_ID and Tank as a random effects
+```{r}
+model_during <- lmer(Growth_rate_During ~ Treatment + (1 | Nest_ID) + (1 | Tank),
+data = datum)
+
+summary(model_during)
+
+confint(model_during) # The 95% CI is 0.05889759
+
+emmeans(model_during, pairwise ~ Treatment)
+
+datum <- datum %>%
+  mutate(z_score = (Growth_rate_During - mean(Growth_rate_During, na.rm = TRUE)) /
+  sd(Growth_rate_During, na.rm = TRUE))
+
+outliers_during_tortoise <- datum %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Growth_rate_During, z_score)
+
+print(outliers_during_tortoise) # There are no outliers
+```
+# Plotting the data for Question 2
+```{r}
+during <- ggplot(datum, aes(x = Treatment, y = Growth_rate_During, color = Treatment)) +
+  geom_boxplot(position = position_dodge(0.85)) +  
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) +
+  ylab("Growth Rate (g/day)") +  # Label the y-axis
+  xlab("Treatment") +  # Label the x-axis
+  scale_color_manual(values = c(cbbPalette[[6]], cbbPalette[[7]]), name = "",
+                     labels = c("", "")) +
+  theme_classic() +  
+  theme(strip.background = element_blank(), legend.position = "none",
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 14)   
+  )  
+during
+
+# Save file as PNG for final figure production
+ggsave(during, file="Growth_rate_During.png", width=9, height=7, dpi=600)
+```
+# Question 3: What is the effect of treatment on growth rate 3 weeks post-cold dormancy?
+
+###  Mixed effect model with Treatment as a fixed effect and Nest_ID and Tank as a random effects
+```{r}
+model_3Weeks <- lmer(Growth_rate_3_Weeks_Post ~ Treatment + (1 | Nest_ID) + (1 | Tank),
+data = datum)
+
+summary(model_3Weeks)
+
+emmeans(model_3Weeks, pairwise ~ Treatment)
+
+datum <- datum %>%
+  mutate(z_score = (Growth_rate_3_Weeks_Post - mean(Growth_rate_3_Weeks_Post, na.rm = TRUE)) /
+  sd(Growth_rate_3_Weeks_Post, na.rm = TRUE))
+
+outliers_3_Weeks_tortoise <- datum %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Growth_rate_3_Weeks_Post, z_score)
+
+print(outliers_3_Weeks_tortoise)
+```
+### There are two outliers, GT2023_N05.01 and GT2023_N17.03, so we need to filter them out and run the model again.
+```{r}
+datum_clean <- datum %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.01", "GT2023_N17.03"))
+
+model_3Weeks_clean <- lmer(Growth_rate_3_Weeks_Post ~ Treatment  + (1 | Tank),
+data = datum_clean)
+
+summary(model_3Weeks_clean)
+
+confint(model_3Weeks_clean) ## The 95% CI is 0.2199788
+
+emmeans(model_3Weeks_clean, pairwise ~ Treatment)
+```
+# Plotting the data for Question 3
+```{r}
+three_weeks <- ggplot(datum_clean, aes(x = Treatment, y = Growth_rate_3_Weeks_Post,
+  color = Treatment)) +
+  geom_boxplot(position = position_dodge(0.85)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) +
+  ylab("Growth Rate (g/day)") +
+  xlab("Treatment") +
+  scale_color_manual(values = c(cbbPalette[[6]], cbbPalette[[7]]), name = "", labels = c("", "")) +
+  theme_classic() +  
+  theme(strip.background = element_blank(), legend.position = "none",
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 14)
+  )  
+three_weeks
+
+# Save file as PNG for final figure production
+ggsave(three_weeks, file="Growth_rate_3Weeks.png", width=9, height=7, dpi=600)
+```
+# Question 4: What is the effect of treatment on growth rate 3 months post-cold dormancy?
+
+### Mixed effect model with Treatment as a fixed effect and Nest_ID and Tank as a random effects
+```{r}
+model_3Months <- lmer(Growth_rate_3_Months_Post ~ Treatment + (1 | Nest_ID) + (1| Tank),
+data = datum)
+
+summary(model_3Months)
+
+confint(model_3Months) # The 95% CI is 0.1626287
+
+emmeans(model_3Months, pairwise ~ Treatment)
+
+datum <- datum %>%
+  mutate(z_score = (Growth_rate_3_Months_Post - mean(Growth_rate_3_Months_Post, na.rm = TRUE)) /
+  sd(Growth_rate_3_Months_Post, na.rm = TRUE))
+
+outliers_3_Months_tortoise <- datum %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Growth_rate_3_Months_Post, z_score)
+
+print(outliers_3_Months_tortoise)
+```
+# Plotting the data for Question 4
+```{r}
+three_months <- ggplot(datum, aes(x = Treatment, y = Growth_rate_3_Months_Post,
+  color = Treatment)) +
+  geom_boxplot(position = position_dodge(0.85)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) +
+  ylab("Growth Rate (g/day)") +
+  xlab("Treatment") +
+  scale_color_manual(values = c(cbbPalette[[6]], cbbPalette[[7]]), name = "",
+  labels = c("", "")) +
+  theme_classic() +  
+  theme(strip.background = element_blank(), legend.position = "none",
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 14)
+  )  
+three_months
+
+# Save file as PNG for final figure production
+ggsave(three_months, file="Growth_rate_3Months.png", width=9, height=7, dpi=600)
+```
+# Now we want to combine the results from all four models into one graph. For this purpose, we will reshape the data to long format using the function pivot_longer.
+```{r}
+datum_long <- datum %>%
+  pivot_longer(
+    cols = c(Growth_rate_Before, Growth_rate_During, Growth_rate_3_Weeks_Post,
+    Growth_rate_3_Months_Post),
+    names_to = "Timepoint",
+    values_to = "Growth_rate"
+  )
+
+datum_long$Timepoint <- factor(
+  datum_long$Timepoint,
+  levels = c("Growth_rate_Before", "Growth_rate_During", "Growth_rate_3_Weeks_Post",
+  "Growth_rate_3_Months_Post"),
+  labels = c("Before", "During", "3-Wk.Post", "3-Mo.Post")
+)
+```
+# Then we will plot the data from all four timepoints together and we will save it as a PNG for publication.
+```{r}
+combined <- ggplot(datum_long, aes(x = Timepoint, y = Growth_rate, color = Treatment)) +
+  geom_boxplot(outlier.shape = NA, width = 0.6, position = position_dodge(0.8), 
+               fill = "white", alpha = 0.5, linewidth = 0.5) +
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8), 
+              size = 2, alpha = 0.4) +
+  stat_summary(fun = mean, geom = "point", size = 2, aes(group = Treatment), 
+               position = position_dodge(width = 0.8)) +
+  stat_summary(fun = mean, geom = "line", aes(group = Treatment), linewidth = 0.6, 
+               position = position_dodge(width = 0.8)) +
+  theme_classic () +
+  theme(
+    panel.grid = element_blank(),
+    axis.title.x = element_text(size = 14, face = "bold", margin = margin(t = 30, b = 15)),
+    axis.title.y = element_text(size = 14, face = "bold", margin = margin(r = 10)),
+    axis.text = element_text(size = 13),
+    legend.title = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 14),
+    legend.position = "right",
+    legend.title.align = 0.5
+  ) +
+  scale_color_manual(
+    values = cbbPalette[c(6, 7)], 
+    name = "Treatment", 
+    labels = c("Cold-Dormancy", "Constant-Warmth")
+  ) +
+  labs(
+    x = "Timepoint",  
+    y = "Growth rate (g/day)"
+  )
+
+combined
+
+# Save file as PNG for final figure production
+ggsave(combined, file = "Combined_Growth_rate.png", width = 12, height = 6, dpi = 600)
+```
+# The next thing we want to do is to estimate body size differences between the two treatments across the four timepoints. For this purpose, we will use the straight carapace length (mm) defined as "CL" in our data. The straight carapace length is a variable measured as straight line from the anterior (front) edge of the shell to the posterior (rear) edge, along the midline of the carapace. We will again filter out some individuals because they showed deviations from normal growth, hence they were excluded from the analyses.
+```{r}
+datum_filtered <- datum %>%
+  filter(!Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01",
+  "GT2023_N05.06", "GT2023_N15.04"))
+
+datum_long <- datum_filtered %>%
+  select(Tortoise_ID, Treatment, Nest_ID, Tank, CL_10, CL_15, CL_16, CL_19) %>%
+  pivot_longer(cols = starts_with("CL_"), names_to = "Timepoint", values_to = "SCL") %>%
+  mutate(
+    Timepoint = factor(Timepoint, levels = c("CL_10", "CL_15", "CL_16", "CL_19")),
+    Nest_ID = as.factor(Nest_ID),
+    Tank = as.factor(Tank)
+  )
+```
+# Running the mixed-effect models for differences in body size (SCL) between treatments across the timepoints.
+
+## Model for estimating body size when Carapace length is at measure 10. This corresponds to measure 10 which is the body size from hatching to 'Before', indicating before initiation of the cold dormancy treatment. At measurement 10 all animals were still under the same conditions.
+```{r}
+cl10_data <- datum_long %>% filter(Timepoint == "CL_10")
+
+model_cl10 <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = cl10_data)
+
+summary(model_cl10)
+
+emmeans_cl10 <- emmeans(model_cl10, pairwise ~ Treatment)
+
+summary(emmeans_cl10$emmeans)
+summary(emmeans_cl10$contrasts)
+
+confint(model_cl10) # The 95% C.I. is 2.432148
+
+datum_long_CL10 <- datum_long %>%
+  filter(Timepoint == "CL_10")
+
+datum_long_CL10 <- datum_long_CL10 %>%
+  mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE))
+
+outliers_SCL_CL10 <- datum_long_CL10 %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Timepoint, SCL, z_score)
+
+print(outliers_SCL_CL10) ## there are no outliers
+```
+## Model for estimating body size when Carapace length is at measure 15. This corresponds to measure 15 which is the body size from 'Before' to 'During'.'During' indicates a measurement during  the cold dormancy treatment but right at the end of the treatment. After that day the cold dormancy animals were prepared for arousal from dormancy.
+```{r}
+cl15_data <- datum_long %>% filter(Timepoint == "CL_15")
+
+model_cl15 <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = cl15_data)
+
+summary(model_cl15)
+
+emmeans_cl15 <- emmeans(model_cl15, pairwise ~ Treatment)
+
+summary(emmeans_cl15$emmeans)
+summary(emmeans_cl15$contrasts)
+
+confint(model_cl15) ## The 95% C.I. is 2.016199
+
+datum_long_CL15 <- datum_long %>%
+  filter(Timepoint == "CL_15")
+
+datum_long_CL15 <- datum_long_CL15 %>%
+  mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE))
+
+outliers_SCL_CL15 <- datum_long_CL15 %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Timepoint, SCL, z_score)
+
+print(outliers_SCL_CL15) ## there are no outliers
+```
+## Model for estimating body size when Carapace length is at measure 16. This corresponds to measure 16 which is the body size from 'During" to '3 Weeks Post'. '3 Weeks Post' indicates a measurement 3 weeks post- cold dormancy treatment. During this period the animals from the cold dormancy treatment are already living under the same conditions as the animals from the constant heat treatment
+```{r}
+cl16_data <- datum_long %>% filter(Timepoint == "CL_16")
+
+model_cl16 <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = cl16_data)
+
+summary(model_cl16)
+
+emmeans_cl16 <- emmeans(model_cl16, pairwise ~ Treatment)
+
+summary(emmeans_cl16$emmeans)
+summary(emmeans_cl16$contrasts)
+
+confint(model_cl16) ## The 95% C.I. is 2.621092
+
+datum_long_CL16 <- datum_long %>%
+  filter(Timepoint == "CL_16")
+
+datum_long_CL16 <- datum_long_CL16 %>%
+  mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE))
+
+outliers_SCL_CL16 <- datum_long_CL16 %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Timepoint, SCL, z_score)
+
+print(outliers_SCL_CL16) ## there are no outliers
+```
+## Model for estimating body size when Carapace length is at measure 19. This corresponds to measure 19 which is the body size from '3 Weeks Post' to '3 Months Post'. '3 Months Post' indicates a measurement 3 months post- cold dormancy treatment. This is also the last measurement taken for all animals before they were released in the wild.
+```{r}
+cl19_data <- datum_long %>% filter(Timepoint == "CL_19")
+
+model_cl19 <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = cl19_data)
+
+summary(model_cl19)
+
+emmeans_cl19 <- emmeans(model_cl19, pairwise ~ Treatment)
+
+summary(emmeans_cl19$emmeans)
+summary(emmeans_cl19$contrasts)
+
+datum_long_CL19 <- datum_long %>%
+  filter(Timepoint == "CL_19")
+
+datum_long_CL19 <- datum_long_CL19 %>%
+  mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE))
+
+outliers_SCL_CL19 <- datum_long_CL19 %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Timepoint, SCL, z_score)
+
+print(outliers_SCL_CL19) ## Tortoise GT2023_N05.01 was identified as an outlier so will be removed from the model
+
+
+# Remove the outlier from the CL_19 dataset
+datum_long_CL19_no_outlier <- datum_long_CL19 %>%
+  filter(Tortoise_ID != "GT2023_N05.01")
+
+# Rerun the model without the outlier
+model_cl19_no_outlier <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank),
+data = datum_long_CL19_no_outlier)
+
+summary(model_cl19_no_outlier)
+
+emmeans_cl19_no_outlier <- emmeans(model_cl19_no_outlier, pairwise ~ Treatment)
+summary(emmeans_cl19_no_outlier$emmeans)
+summary(emmeans_cl19_no_outlier$contrasts)
+
+confint(model_cl19_no_outlier) # The 95% C.I. is 3.730787
+```
+# Plotting the data for body size across all four timepoints.
+```{r}
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+"#D55E00", "#CC79A7")
+
+datum_long_clean <- datum_long %>%
+  filter(!is.na(SCL)) %>%  # Remove NAs in SCL
+  filter(!(Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01",
+  "GT2023_N05.06", "GT2023_N15.04", "GT2023_N05.01")))  
+
+summary_data <- datum_long_clean %>%
+  group_by(Timepoint, Treatment) %>%
+  summarise(
+    mean_SCL = mean(SCL, na.rm = TRUE),
+    se_SCL = sd(SCL, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+timepoint_labels <- c("CL_10" = "Before", 
+                      "CL_15" = "During", 
+                      "CL_16" = "3-Wk.Post", 
+                      "CL_19" = "3-Mo.Post")
+
+body_size_box <- ggplot(datum_long_clean, aes(x = Timepoint, y = SCL, color = Treatment)) +
+  geom_boxplot(outlier.shape = NA, width = 0.6, position = position_dodge(0.8),
+               fill = "white", alpha = 0.5, linewidth = 0.5) +
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8),
+              size = 2, alpha = 0.4) +
+  stat_summary(fun = mean, geom = "point", size = 2, aes(group = Treatment),
+               position = position_dodge(width = 0.8)) +
+  stat_summary(fun = mean, geom = "line", aes(group = Treatment),
+               linewidth = 0.6, position = position_dodge(width = 0.8)) +
+  scale_color_manual(
+    values = cbbPalette[c(6, 7)],
+    name = "Treatment",
+    labels = c("Cold-Dormancy", "Constant-Warmth")
+  ) +
+  scale_x_discrete(labels = timepoint_labels) +
+  theme_classic() +
+  theme(
+    panel.grid = element_blank(),
+    axis.title.x = element_text(size = 14, face = "bold", margin = margin(t = 30, b = 15)),
+    axis.title.y = element_text(size = 14, face = "bold", margin = margin(r = 10)),
+    axis.text = element_text(size = 13),
+    legend.title = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 14),
+    legend.position = "right",
+    legend.title.align = 0.5
+  ) +
+  labs(
+    x = "Timepoint",
+    y = "Mean SCL (mm)"
+  )
+
+body_size_box
+
+# Save the plot as PNG for final figure production
+ggsave(body_size_box, file = "Body_size.png", width = 12, height = 6, dpi = 600)
+```
+# Finally, we want to combine both figures for Growth rate and for Body size into one final figure with two panels. For this purpose, we will use the function ggarrange(). We will save the figure as a PNG for publication.
+```{r}
+body_size_box <- body_size_box + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+combined <- combined + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+final_figure <- ggarrange(
+  body_size_box,  
+  combined,   
+  labels = c("A", "B"), 
+  ncol = 2,  
+  common.legend = TRUE,  
+  legend = "right",  
+  label.x = 0.05
+)
+
+final_figure
+
+ggsave(
+  filename = "Final_Combined_Figure.png",
+  plot = final_figure,
+  width = 12,
+  height = 8,
+  dpi = 600,
+  bg = "white", 
+  device = "png"
+)
+
+```
+# This is a link to the GitHub repository
+[Gopher_tortoise_Head-start_2023](https://github.com/AnetFilipova/Gopher_tortoise_Head-start_2023)

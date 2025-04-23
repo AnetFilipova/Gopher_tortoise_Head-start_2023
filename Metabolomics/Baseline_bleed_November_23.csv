@@ -1,0 +1,61 @@
+Rack,Tank,Clutch_ID,Max_allowed_blood_volume,Collected_Blood_Volume,Time_when_animal_caught,Bleed_start_(minutes_after_catch),Total_bleed_time,Whole_Blood_for_RNA,Whole_Blood_for_DNA,Plasma_(P1),Plasma_(P2),Plasma_(P3),RBC_(plasma_removed),Glucose,Date,Notes_(LN=liquid_nitrogen);_time_in_hour:minutes
+4,12,5.3,747.6,100,11:23,,4:20,Yes,Yes,Yes,No,No,Yes,81,11/5/2023,
+1,3,8.2,657.3,230,11:30,2:27,5:10,Yes,Yes,Yes,Yes,Yes,Yes,118,11/5/2023,
+4,12,10.3,462.5,117,11:40,3:10,7:37,Yes,Yes,Yes,No,Yes,Yes,109,11/5/2023,Clotting after centrifuge
+3,9,9.6,533.6,360,11:49,2:16,5:57,Yes,Yes,Yes,Yes,Yes,Yes,152,11/5/2023,Tubes in LN at 11:58
+4,12,9.1,485.6,400,12:33,-,5:45,Yes,Yes,Yes,Yes,Yes,Yes,92,11/1/2023,Bled on 11/01/23; RNA time at 8:46
+2,6,9.3,562.1,500,11:59,12:02,12:05,Yes,Yes,Yes,Yes,Yes,Yes,199,11/5/2023,Tubes in LN at 12:06; excess plasma in P3
+1,3,2.2,551.2,480,12:07,12:09,12:10,Yes,Yes,Yes,Yes,Yes,Yes,110,11/5/2023,Tubes in LN at 12:13; excess plasma in P3
+2,6,17.2,553.5,490,12:13,2:25,4:40,Yes,Yes,Yes,Yes,Yes,Yes,150,11/5/2023,Tubes in LN at 12:20; excess plasma in P3
+4,11,5.2,633,160,12:21,2:23,5:53,Yes,Yes,Yes,Yes,Yes,Yes,143,11/5/2023,Tubes in LN at 12:29
+3,8,17.3,495.7,290,12:30,2:23,7:21,Yes,Yes,Yes,Yes,Yes,Yes,135,11/5/2023,Tubes in LN at 12:39
+4,12,6.1,572.9,200,12:40,3:28,9:24,Yes,Yes,Yes,Yes,No,Yes,125,11/5/2023,Tubes in LN at 12:53; partial lysis
+4,12,15.1,505,-,12:44,2:31,4:10,Yes,Yes,Yes,Yes,Yes,Yes,96,11/1/2023,Tubes in LN at 10:20; lots of clotting; Bled on 11/01/23
+4,12,14.4,498.4,-,12:52,12:56,10:05,No,No,No,No,No,No,163,11/5/2023,No blood collected (over 16 min)
+1,2,7.4,501.8,290,13:10,1:54,4:26,Yes,Yes,No,No,No,Yes,186,11/5/2023,Tubes in LN at 13:18; lysed after centrifuged
+4,11,2.3,528.5,350,13:18,2:55,5:13,Yes,Yes,Yes,Yes,Yes,Yes,119,11/5/2023,Tubes in LN at 13:26; exces plasma in P3
+2,5,2.4,552.4,450,13:20,1:50,3:39,Yes,Yes,Yes,Yes,Yes,Yes,147,11/5/2023,Tubes in LN at 13:28; excess plasma in P3
+1,2,8.1,642,-,13:26,1:27,2:28,Yes,Yes,Yes,Yes,Yes,Yes,143,11/5/2023,Tubes in LN at 13:33; excess plasma in P3
+4,10,10.1,516.7,400,13:27,0:38,2:37,Yes,Yes,Yes,Yes,Yes,Yes,138,11/5/2023,Tubes in LN at 13:32; excess plasma in P3
+1,2,10.5,540.7,510,13:27,2:12,2:56,Yes,Yes,Yes,Yes,Yes,Yes,171,11/5/2023,Tubes in LN at 13:34; excess plasma in P3
+3,8,11.4,571.2,330,13:33,-,2:45,Yes,Yes,Yes,Yes,Yes,Yes,134,11/5/2023,Tubes in LN at 13:38; excess plasma in P3
+1,1,10.4,502.9,-,12:13,3:26,11:30,Yes,Yes,Yes,Yes,Yes,Yes,-,11/1/2023,Tubes in LN at 13:16; bled on 11/01/23; no glucose was measured
+4,11,7.3,483.6,220,13:33,1:20,4:18,Yes,Yes,Yes,Yes,Yes,Yes,134,11/5/2023,Tubes in LN at 13:40; excess plasma in P3
+3,9,7.1,503.4,480,13:34,2:06,4:37,Yes,Yes,Yes,Yes,Yes,Yes,150,11/5/2023,Tubes in LN at 13:41; excess plasma in P3
+2,6,12.4,516.5,350,13:42,1:17,3:21,Yes,Yes,Yes,Yes,Yes,Yes,211,11/5/2023,Tubes in LN at 13:48
+1,2,15.3,581.6,350,13:40,-,3:35,Yes,Yes,Yes,No,No,Yes,212,11/5/2023,Tubes in LN at 13:46; partial lysis; only P1 exists 
+1,3,13.3,494.4,300,13:42,2:48,4:40,Yes,Yes,Yes,Yes,Yes,Yes,131,11/5/2023,Tubes in LN at 13:49; excess plasma in P3
+1,1,3.2,543.6,-,11:41,3:25,5:24,Yes,Yes,Yes,Yes,Yes,Yes,-,11/1/2023,Tubes in LN at 8:44?; bled on 11/01/23; no glucose measurement
+1,1,13.1,634.9,-,-,-,5:24,Yes,Yes,Yes,Yes,Yes,Yes,94,11/1/2023,Tubes in LN at 7:46?; bled on 11/01/23
+3,8,9.5,531.2,300,13:48,1:05,2:20,Yes,Yes,Yes,Yes,Yes,Yes,119,11/5/2023,Tubes in LN at 13:54
+2,5,6.2,552.7,200,13:49,1:51,1:56,Yes,Yes,Yes,Yes,Yes,Yes,125,11/5/2023,Tubes in LN at 13:58; excess plasma in P3
+2,5,9.2,472.8,485,13:49,3:06,4:10,Yes,Yes,Yes,Yes,Yes,Yes,139,11/5/2023,Tubes in LN at 13:56; excess plasma in P3
+4,10,7.2,449.6,225,11:23,0:55,1:54,Yes,Yes,Yes,Yes,Yes,Yes,121,11/5/2023,
+1,1,5.4,676.7,-,11:55,2:30,6:43,Yes,Yes,Yes,Yes,No,Yes,86,11/1/2023,All tubes in LN at 9:13?; bled on 11/01/23
+3,8,3.3,443.7,350,11:28,1:15,5:14,Yes,Yes,Yes,Yes,Yes,Yes,-,11/5/2023,No glucose was measured; Excess plasma in P3
+4,10,9.4,460,200,11:31,-,6:00,Yes,Yes,Yes,Yes,Yes,Yes,80,11/5/2023,
+1,1,15.2,524.7,-,-,-,9:17,Yes,Yes,Yes,Yes,Yes,Yes,124,11/1/2023,All tubes in LN at 10:29?; bled on 11/01/23
+2,5,15.5,511,150,11:40,2:00,6:00,Yes,Yes,No,No,No,Yes,113,11/5/2023,Lysis completely; no plasma
+1,3,15.4,569.1,315,11:42,1:16,3:18,Yes,Yes,Yes,No,No,Yes,141,11/5/2023,
+2,5,11.2,485.9,250,11:50,1:19,11:20,Yes,Yes,Yes,Yes,Yes,Yes,141,11/5/2023,Tubes in LN at 12:05
+4,10,5.1,591.1,360,11:51,-,4:56,Yes,Yes,Yes,Yes,Yes,Yes,177,11/5/2023,Tubes in LN at 12:02; excess plasma in P3
+3,9,3.4,544,-,12:05,12:07,12:09,Yes,Yes,Yes,Yes,Yes,Yes,158,11/5/2023,Tubes in LN at 12:12; excess plasma in P3
+4,11,14.5,600,400,12:05,1:45,2:25,Yes,Yes,Yes,Yes,Yes,Yes,-,11/5/2023,Tubes in LN at 12:10; excess plasma in P3
+3,8,6.5,552.6,400,12:14,0:45,1:50,Yes,Yes,Yes,Yes,Yes,Yes,100,11/5/2023,Tubes in LN at 12:19; excess plasma in P3
+3,9,17.4,497.5,380,12:17,-,4:16,Yes,Yes,Yes,Yes,Yes,Yes,200,11/5/2023,Tubes in LN at 12:24; excess plasma in P3
+1,2,13.2,521,350,12:20,1:20,2:35,Yes,Yes,Yes,Yes,Yes,Yes,154,11/5/2023,Tubes in LN at 12:27
+1,1,7.5,566.3,-,12:11,3:15,8:23,Yes,Yes,Yes,Yes,Yes,Yes,116,11/1/2023,Tubes in LN at 10:13?; bled on 11/01/23
+2,6,3.1,596,500,12:25,0:54,2:36,Yes,Yes,Yes,Yes,Yes,Yes,126,11/5/2023,Tubes in LN at 12:36; excess plasma in P3
+3,8,12.2,413.5,350,12:25,1:13,5:52,Yes,Yes,Yes,Yes,Yes,Yes,188,11/5/2023,Tubes in LN at 12:33
+2,5,13.4,521.5,110,12:33,1:02,4:10,Yes,Yes,Yes,Yes,No,Yes,179,11/5/2023,Tubes in LN 12:41; ~ 20uL plasma in P2
+4,10,17.5,442.2,300,12:34,0:58,3:56,Yes,Yes,Yes,Yes,Yes,Yes,151,11/5/2023,Tubes in LN at 12:42; ~30 uL plasma in P3
+3,9,6.4,596,150,12:42,0:53,5:50,Yes,Yes,Yes,Yes,Yes,Yes,178,11/5/2023,Clotting; Tubes in LN at 12:51; lysis; very little plasma in P3
+1,2,5.5,674,280,12:42,2:10,4:23,Yes,Yes,Yes,Yes,Yes,Yes,170,11/5/2023,Tubes in LN at 12:49; partial lysis; ~40 uL plasma in P2
+2,6,11.3,597.2,250,12:52,0:50,3:37,Yes,Yes,Yes,Yes,Yes,Yes,129,11/5/2023,Tubes in LN at 12:59
+1,3,10.6,564.5,480,12:51,1:40,3:00,Yes,Yes,Yes,Yes,Yes,Yes,183,11/5/2023,Tubes in LN at 12:56
+4,10,12.6,452.5,250,13:00,1:07,4:34,Yes,Yes,Yes,Yes,No,Yes,147,11/5/2023,Tubes in LN at 13:07
+2,6,6.3,574.6,500,12:59,1:55,3:45,Yes,Yes,Yes,Yes,Yes,Yes,174,11/5/2023,Tubes in LN at 13:05; excess plasa in P3
+3,9,11.1,576,290,13:09,-,3:45,Yes,Yes,Yes,Yes,Yes,Yes,141,11/5/2023,Tubes in LN at 13:15
+4,11,10.2,420.7,450,13:09,-,2:07,Yes,Yes,Yes,Yes,Yes,Yes,147,11/5/2023,Tubes in LN at 13:13; excess plasma in P3
+4,11,12.5,500.5,450,13:14,1:15,3:00,Yes,Yes,Yes,Yes,Yes,Yes,199,11/5/2023,Tubes in LN at 13:19; excess plasma in P3
+1,3,5.6,687.4,120,13:13,1:33,5:10,Yes,Yes,Yes,Yes,Yes,Yes,174,11/5/2023,Tubes in 13:23

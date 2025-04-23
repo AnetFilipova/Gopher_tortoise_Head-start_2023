@@ -1,0 +1,3 @@
+"0","datum <- read.csv(""Data/Growth_data_Working.csv"", na.strings = ""na"") # Reading the data"
+"2","Error in file(file, ""rt"") : cannot open the connection
+"
