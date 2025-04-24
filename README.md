@@ -7,7 +7,8 @@ Data, code and results for each separate analysis are contained in this project,
 
 Please use the following DOI to cite this data and associated functions/analyses.
 
-[![DOI](https://zenodo.org/badge/942427473.svg)](https://doi.org/10.5281/zenodo.14977202)
+[![DOI](https://zenodo.org/badge/971060862.svg)](https://doi.org/10.5281/zenodo.15273407)
+
 
 ### Overview
 
