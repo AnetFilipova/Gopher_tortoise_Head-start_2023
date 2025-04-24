@@ -3,10 +3,12 @@ title: "Exploring the effects of first-year cold dormancy on growth trajectories
 author: "Anet Filipova"
 date: "2025-04-22"
 output:
-  word_document:
-  pdf_document:
   md_document:
     variant: gfm
+  pdf_document:
+  github_document:
+    keep_md: true
+  word_document:
   html_document:
 ---
 ```{r setup, include=FALSE, tidy.opts = list(width.cutoff = 100), tidy = TRUE}
