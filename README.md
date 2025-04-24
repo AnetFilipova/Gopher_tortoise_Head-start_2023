@@ -15,11 +15,12 @@ Please use the following DOI to cite this data and associated functions/analyses
 ├── Gopher_tortoise_Head-start_2023.Rproj
 ├── Growth_data/
 │   ├── Code/
-│   │   └── [analysis scripts here]
+│   │   └── [GT_Cohort3_Growth.R]            # Analysis for growth rate and body size differences
 │   ├── Data/
-│   │   └── [raw and processed data files]
-│   └── Figures/
-│       └── [generated figures and plots]
+│   │   ├── [Growth_Metadata.xlsx]           # Growth metadata (Nest_ID, measurements, etc.)
+│   │   └── [Growth_data_Working.csv]        # Cleaned growth data used in analysis
+│   └── Figures                              # All the figures produced from growth analysis
+│    
 ├── Metabolomics/
 │   └── [metabolomics analysis files/scripts]
 ├── Telo_mtDNA/
@@ -28,4 +29,5 @@ Please use the following DOI to cite this data and associated functions/analyses
 │       │   └── [telomere and mtDNA R scripts]
 │       └── data/
 │           └── [telomere/mtDNA data files]
+
 ```
