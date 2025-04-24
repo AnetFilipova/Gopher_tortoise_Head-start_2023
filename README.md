@@ -13,21 +13,33 @@ Please use the following DOI to cite this data and associated functions/analyses
 
 ```Gopher_tortoise_Head-start_2023/
 ├── Gopher_tortoise_Head-start_2023.Rproj
+│
 ├── Growth_data/
 │   ├── Code/
-│   │   └── [GT_Cohort3_Growth.R]            # Analysis for growth rate and body size differences
+│   │   └── GT_Cohort3_Growth.R              # Analysis for growth rate and body size differences
 │   ├── Data/
-│   │   ├── [Growth_Metadata.xlsx]           # Growth metadata (Nest_ID, measurements, etc.)
-│   │   └── [Growth_data_Working.csv]        # Cleaned growth data used in analysis
-│   └── Figures                              # All the figures produced from growth analysis
-│    
+│   │   ├── Growth_Metadata.xlsx             # Growth metadata (Nest_ID, measurements, etc.)
+│   │   └── Growth_data_Working.csv          # Cleaned growth data used in analysis
+│   ├── Figures/                             # All the figures produced from growth analysis
+│   ├── GT_Growth.Rmd                        # R Markdown for growth analysis
+│   ├── GT_Growth.html                       # Rendered HTML output
+│   ├── GT_Growth.pdf                        # Rendered PDF output
+│   └── GT_Growth.md                         # Markdown export
+│
 ├── Metabolomics/
 │   └── [metabolomics analysis files/scripts]
+│
 ├── Telo_mtDNA/
+│   ├── qPCR_PlateReviewData_2_25_25.xlsx    # Plate review metadata for qPCR
 │   └── Manuscript_Analysis/
-│       ├── R/
+│       ├── Code/
 │       │   └── [telomere and mtDNA R scripts]
-│       └── data/
-│           └── [telomere/mtDNA data files]
+│       ├── Data/
+│       │   └── [telomere/mtDNA data files]
+│       ├── Figures/                         # All figures generated from telomere/mtDNA analyses
+│       ├── Telo_mtDNA.Rmd                   # R Markdown for manuscript analysis
+│       ├── Telo_mtDNA.html                  # Rendered HTML output of the analysis
+│       ├── Telo_mtDNA.pdf                   # Rendered PDF output of the analysis
+│       └── Telo_mtDNA.md                    # Markdown export of the Rmd file
 
 ```
