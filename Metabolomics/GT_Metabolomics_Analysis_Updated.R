@@ -594,8 +594,12 @@ sample_size_per_treatment_ECOA <- ECOA_Master_Dataset %>%
 # Print sample size per treatment
 print(sample_size_per_treatment_ECOA)
 
+#within_plate_variation_ECOA <- ECOA_Master_Dataset %>%
+  #total_CV = mean(CV, na.rm = TRUE)
+
 within_plate_variation_ECOA <- ECOA_Master_Dataset %>%
-  total_CV = mean(CV, na.rm = TRUE)
+  summarise(total_CV = mean(CV, na.rm = TRUE))
+
 
 print(within_plate_variation_ECOA)
 
@@ -643,7 +647,7 @@ Glucose_Data$timepoint <- factor(
 # Reorder the levels of the treatment variable
 Glucose_Data$treatment <- factor(
   Glucose_Data$treatment, 
-  levels = c("Constant Growth", "Cold Dormancy")
+  levels = c("Cold Dormancy", "Constant Warmth")
 )
 
 # Now perform the left join
@@ -690,7 +694,7 @@ Glucose_Plot_pre <- ggplot(Glucose_timepoint_A_data, aes(x = treatment, y = Gluc
   ylab("Plasma Glucose Concentrations") +
   xlab("Treatment") +
   # Apply the same manual color scale (using specific indices from the palette)
-  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+  scale_color_manual(values = c(cbbPalette[6], cbbPalette[7]), 
                      name = "", 
                      labels = c("", "")) +
   # Use a classic theme and customize text sizes and remove legend
@@ -793,7 +797,7 @@ Glucose_Plot_3wks <- ggplot(Glucose_timepoint_C_data, aes(x = treatment, y = Glu
   ylab("Plasma Glucose Concentrations") +
   xlab("Treatment") +
   # Apply the same manual color scale (using specific indices from the palette)
-  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+  scale_color_manual(values = c(cbbPalette[6], cbbPalette[7]), 
                      name = "", 
                      labels = c("", "")) +
   # Use a classic theme and customize text sizes and remove legend
@@ -834,7 +838,7 @@ Glucose_Plot_3month <- ggplot(Glucose_timepoint_D_data, aes(x = treatment, y = G
   ylab("Plasma Glucose Concentrations") +
   xlab("Treatment") +
   # Apply the same manual color scale (using specific indices from the palette)
-  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+  scale_color_manual(values = c(cbbPalette[6], cbbPalette[7]), 
                      name = "", 
                      labels = c("", "")) +
   # Use a classic theme and customize text sizes and remove legend
