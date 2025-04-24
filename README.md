@@ -43,3 +43,6 @@ Please use the following DOI to cite this data and associated functions/analyses
 │       └── Telo_mtDNA.md                    # Markdown export of the Rmd file
 
 ```
+### Software
+
+All the analyses were performed in Rstudio version 2024.12.1. The packages needed for each analysis are specified in the corresponding script.
