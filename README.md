@@ -21,10 +21,10 @@ Please use the following DOI to cite this data and associated functions/analyses
 │   │   ├── Growth_Metadata.xlsx             # Growth metadata (Nest_ID, measurements, etc.)
 │   │   └── Growth_data_Working.csv          # Cleaned growth data used in analysis
 │   ├── Figures/                             # All the figures produced from growth analysis
-│   ├── GT_Growth.Rmd                        # R Markdown for growth analysis
+│   ├── GT_Growth.Rmd                        # R Markdown for growth/body size analysis
 │   ├── GT_Growth.html                       # Rendered HTML output
-│   ├── GT_Growth.pdf                        # Rendered PDF output
-│   └── GT_Growth.md                         # Markdown export
+│   ├── GT_Growth.pdf                        # Rendered PDF output of the growth/body size analysis
+│   └── GT_Growth.md                         # Markdown export of the Rmd file
 │
 ├── Metabolomics/
 │   └── [metabolomics analysis files/scripts]
@@ -33,13 +33,13 @@ Please use the following DOI to cite this data and associated functions/analyses
 │   ├── qPCR_PlateReviewData_2_25_25.xlsx    # Plate review metadata for qPCR
 │   └── Manuscript_Analysis/
 │       ├── Code/
-│       │   └── [telomere and mtDNA R scripts]
+│       │   └── [GT_MtDNA_Telo.R]            # Analysis for telomere length and mtDNA density differences
 │       ├── Data/
-│       │   └── [telomere/mtDNA data files]
+│       │   └── [telomere/mtDNA data files]  # qPCR exported files, trait metadata, etc.
 │       ├── Figures/                         # All figures generated from telomere/mtDNA analyses
-│       ├── Telo_mtDNA.Rmd                   # R Markdown for manuscript analysis
-│       ├── Telo_mtDNA.html                  # Rendered HTML output of the analysis
-│       ├── Telo_mtDNA.pdf                   # Rendered PDF output of the analysis
+│       ├── Telo_mtDNA.Rmd                   # R Markdown for telomeres/mtDNA analysis
+│       ├── Telo_mtDNA.html                  # Rendered HTML output
+│       ├── Telo_mtDNA.pdf                   # Rendered PDF output of the telomeres/mtDNA analysis
 │       └── Telo_mtDNA.md                    # Markdown export of the Rmd file
 
 ```
