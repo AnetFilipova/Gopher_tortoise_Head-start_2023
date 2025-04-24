@@ -3,10 +3,10 @@ title: "Exploring the effects of first-year cold dormancy on growth trajectories
 author: "Anet Filipova"
 date: "2025-04-22"
 output:
+  word_document:
+  pdf_document:
   md_document:
     variant: gfm
-  pdf_document:
-  word_document:
   html_document:
 ---
 ```{r setup, include=FALSE, tidy.opts = list(width.cutoff = 100), tidy = TRUE}
@@ -525,7 +525,6 @@ ggsave(
   bg = "white", 
   device = "png"
 )
-
 ```
 # This is a link to the GitHub repository
 [Gopher_tortoise_Head-start_2023](https://github.com/AnetFilipova/Gopher_tortoise_Head-start_2023)
