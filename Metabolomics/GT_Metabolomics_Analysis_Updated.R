@@ -1,10 +1,12 @@
-#Load relevant libraries
+# Exploring the effects of first-year cold dormancy on metabolic profiles in head-started Gopher tortoises
 
+#Load relevant libraries
 library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(lmodel2)
 library(emmeans)
+library(nlme)
 library(lme4)
 library(data.table)
 library(car)
@@ -16,34 +18,32 @@ library(gridExtra)
 # Clear memory
 rm(list=ls(all = TRUE))
 
-setwd("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis")
-
 ##### DATASET PRE_PROCESSING #####
 
 #READ DATASETS & INSPECT STRUCTURE
 
-Baseline_Bleed <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Baseline_bleed_November_23.csv" ,header=T, sep = ",", as.is=T)
+Baseline_Bleed <- read.csv("Baseline_bleed_November_23.csv" ,header=T, sep = ",", as.is=T)
 str(Baseline_Bleed)
 
-Hibernation_Bleed <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Hibernation_Bleed_2_27-28_24.csv" ,header=T, sep = ",", as.is=T)
+Hibernation_Bleed <- read.csv("Hibernation_Bleed_2_27-28_24.csv" ,header=T, sep = ",", as.is=T)
 str(Hibernation_Bleed)
 
-Post_Hibernation_Bleed_2week <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Post_hibernation_bleeding_03_19_24.csv" ,header=T, sep = ",", as.is=T)
+Post_Hibernation_Bleed_2week <- read.csv("Post_hibernation_bleeding_03_19_24.csv" ,header=T, sep = ",", as.is=T)
 str(Post_Hibernation_Bleed_2week)
 
-Post_Hibernation_Bleed_3month <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Post_Hibernation_3month_Bleed_06_09_24.csv" ,header=T, sep = ",", as.is=T)
+Post_Hibernation_Bleed_3month <- read.csv("Post_Hibernation_3month_Bleed_06_09_24.csv" ,header=T, sep = ",", as.is=T)
 str(Post_Hibernation_Bleed_3month)
 
-AU_Headstart23_Individual_Data <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Headstart_Individuals_AU_2023.csv" ,header=T, sep = ",", as.is=T)
+AU_Headstart23_Individual_Data <- read.csv("Headstart_Individuals_AU_2023.csv" ,header=T, sep = ",", as.is=T)
 str(AU_Headstart23_Individual_Data)
 
-Glucose_Standard_Data <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Glucose_Standard_Data.csv")
+Glucose_Standard_Data <- read.csv("Glucose_Standard_Data.csv")
 str(Glucose_Standard_Data)
 
-TRIG_Master_Dataset <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/Triglyceride_MasterDataSheet_AU23GT.csv")
+TRIG_Master_Dataset <- read.csv("Triglyceride_MasterDataSheet_AU23GT.csv")
 str(TRIG_Master_Dataset)
 
-ECOA_Master_Dataset <- read.csv("C:/Users/aliam/Box/TS_Lab_GopherTortoises/Metabolomics/Data Analysis/ECOA_MasterDataSheet_AU23GT.csv")
+ECOA_Master_Dataset <- read.csv("ECOA_MasterDataSheet_AU23GT.csv")
 str(ECOA_Master_Dataset)
 
 # REMOVE UNNECESSARY COLUMNS
@@ -323,8 +323,8 @@ hist(TRIG_Master_Dataset$logTRIG)
 
 
 TRIG_Model <- lme(TRIG ~  Treatment + Timepoint, 
-                      random = ~1 | Nest_ID,
-                      data = TRIG_Master_Dataset)
+                  random = ~1 | Nest_ID,
+                  data = TRIG_Master_Dataset)
 
 # Summary of the model
 summary(TRIG_Model)
@@ -335,21 +335,13 @@ hist(residuals(TRIG_Model))
 #TreatmentOverwinter:Timepoint3 weeks - Not significant (pvalue - 0.4339)
 #TreatmentOverwinter:Timepoint3 months - Not significant (pvalue - 0.8210)
 
-
-ggplot(TRIG_Master_Dataset, aes(x = Timepoint, y = TRIG, fill = Treatment)) +
-  geom_boxplot() +
-  labs(title = "TRIG Levels by Treatment & Timepoint",
-       x = "Timepoint",
-       y = "Triglyceride Concentration (mg/dL)") +
-)  
-
 pairwise_interaction <- emmeans(TRIG_Model, pairwise ~ Treatment * Timepoint, adjust = "tukey")
 print(pairwise_interaction)
 
 #Pre-Dormancy
 TRIG_Model_Pre <- lme(TRIG ~  Treatment,
-                     random = ~1 | Nest_ID,
-                     data = timepoint_A_data)
+                      random = ~1 | Nest_ID,
+                      data = timepoint_A_data)
 
 # Summary of the model
 summary(TRIG_Model_Pre)
@@ -390,8 +382,8 @@ plotA
 
 #3week
 TRIG_Model_3w <- lme(TRIG ~  Treatment,
-                  random = ~1 | Nest_ID,
-                  data = timepoint_C_data)
+                     random = ~1 | Nest_ID,
+                     data = timepoint_C_data)
 
 # Summary of the model
 summary(TRIG_Model_3w)
@@ -519,7 +511,7 @@ ECOA_Master_Dataset
 ECOA_Master_Dataset <- ECOA_Master_Dataset %>%
   mutate(
     Clutch_ID = sub("\\(.\\)", "", Clutch_ID),       # Remove the parentheses and letter       
-    )
+  )
 
 # Convert both Clutch_ID columns to character and remove extra white space
 ECOA_Master_Dataset$Clutch_ID <- trimws(as.character(ECOA_Master_Dataset$Clutch_ID))
@@ -548,11 +540,8 @@ ECOA_Model_3w <- lme(ECOA ~  Treatment,
 
 # Summary of the model
 summary(ECOA_Model_3w)
-anova(ECOA_Model_3w)
 shapiro.test(residuals(ECOA_Model_3w))
 hist(residuals(ECOA_Model_3w))
-
-
 
 # Calculate a y offset based on your data range
 maxECOA <- max(ECOA_Master_Dataset$ECOA, na.rm = TRUE)
@@ -620,6 +609,10 @@ ggsave(ECOA_plot, file="ECOA_Fig.jpg", dpi = 250, width = 10, height = 8)
 Glucose_Data <- Master_Dataset
 Glucose_Data
 
+# Remove individuals for bleed times > 10
+Glucose_Data <- Glucose_Data %>%
+  filter(!Clutch_ID %in% c("9.3", "2.2", "14.4", "10.4", "11.2", "3.4"))
+
 # Convert Glucose column to numeric
 Glucose_Data$Glucose <- as.numeric(as.character(Glucose_Data$Glucose))
 
@@ -653,29 +646,17 @@ Glucose_Data$treatment <- factor(
   levels = c("Constant Growth", "Cold Dormancy")
 )
 
-Glucose_Model <- lme(Glucose ~  treatment * timepoint,
-                  random = ~1 | Tank,
-                  data = Glucose_Data)
+# Now perform the left join
+Glucose_Data <- merge(
+  Glucose_Data,
+  Updated_AU_Headstart23_Individual_Data[, c("Clutch_ID", "Nest_ID")],
+  by = "Clutch_ID"
+)
+str(Glucose_Data)
 
-# Summary of the model
-summary(Glucose_Model)
-anova(Glucose_Model)
-shapiro.test(residuals(Glucose_Model))
-hist(residuals(Glucose_Model))
-
-Glucose_Plot <- ggplot(Glucose_Data, aes(x =timepoint, y = Glucose, fill = treatment)) +
-  geom_boxplot() +
-  labs(title = "Plasma Glucose Concentrations by Treatment & Timepoint",
-       x = "Timepoint",
-       y = "Plasma Glucose Concentrations") +
-  common_layers
-
-Glucose_Plot
-
-ggsave(Glucose_Plot, file="Glucose_Fig.jpg", dpi = 250, width = 10, height = 8)
-
-pairwise_interaction_gl <- emmeans(Glucose_Model, pairwise ~ treatment * timepoint, adjust = "tukey")
-print(pairwise_interaction_gl)
+#Filter and save data for Timepoint A
+Glucose_timepoint_A_data <- Glucose_Data %>%
+  filter(timepoint == "Pre-Dormancy")
 
 # Filter and save data for Timepoint C
 Glucose_timepoint_B_data <- Glucose_Data %>%
@@ -689,33 +670,193 @@ Glucose_timepoint_C_data <- Glucose_Data %>%
 Glucose_timepoint_D_data <- Glucose_Data %>%
   filter(timepoint == "3 months-Post")
 
-Glucose_Model1 <- lme(Glucose ~  treatment,
-                     random = ~1 | Clutch_ID,
-                     data = Glucose_timepoint_B_data)
+Glucose_Model_Pre <- lme(Glucose ~  treatment,
+                         random = ~1 | Nest_ID,
+                         data = Glucose_timepoint_A_data)
 
 # Summary of the model
-summary(Glucose_Model1)
-anova(Glucose_Model1)
-shapiro.test(residuals(Glucose_Model1))
-hist(residuals(Glucose_Model1))
+summary(Glucose_Model_Pre)
+anova(Glucose_Model_Pre)
+shapiro.test(residuals(Glucose_Model_Pre))
+hist(residuals(Glucose_Model_Pre))
 
-Glucose_Model2 <- lme(Glucose ~  treatment,
-                      random = ~1 | Clutch_ID,
-                      data = Glucose_timepoint_C_data)
+
+Glucose_Plot_pre <- ggplot(Glucose_timepoint_A_data, aes(x = treatment, y = Glucose, color = treatment)) +
+  # Add boxplots with adjusted dodge to avoid overlap
+  geom_boxplot(position = position_dodge(0.85)) +
+  # Add jittered points for individual data visualization
+  geom_jitter(width = 0.10, alpha = 0.5, size = 2) +
+  # Label the axes
+  ylab("Plasma Glucose Concentrations") +
+  xlab("Treatment") +
+  # Apply the same manual color scale (using specific indices from the palette)
+  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+                     name = "", 
+                     labels = c("", "")) +
+  # Use a classic theme and customize text sizes and remove legend
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        legend.position = "none",
+        axis.title = element_text(color = "black", size = 14,face = "bold"),
+        axis.text = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 15))) +
+  # Add the letter "C" at the top left (near the y-axis) as a figure label
+  annotate("text", 
+           x = -Inf, y = Inf, 
+           label = "A", 
+           hjust = -0.5, # Adjust horizontal justification to move it outside the plotting area
+           vjust = 1.5,  # Adjust vertical justification to fine-tune its placement
+           size = 8, 
+           color = "black", 
+           fontface = "bold")
+
+Glucose_Plot_pre
+
+# Calculate a y offset based on your data range
+maxGlucoseB <- max(Glucose_timepoint_B_data$Glucose, na.rm = TRUE)
+y_offset_GlucoseB <- diff(range(Glucose_timepoint_B_data$Glucose, na.rm = TRUE)) * 0.05  # 5% above max
+line_offset_GlucoseB <- diff(range(Glucose_timepoint_B_data$Glucose, na.rm = TRUE)) * 0.02  # 2% below the asterisk
+
+Glucose_Model_Dor<- lme(Glucose ~  treatment,
+                        random = ~1 | Nest_ID,
+                        data = Glucose_timepoint_B_data)
 
 # Summary of the model
-summary(Glucose_Model2)
-anova(Glucose_Model2)
-shapiro.test(residuals(Glucose_Model2))
-hist(residuals(Glucose_Model2))
+summary(Glucose_Model_Dor)
+anova(Glucose_Model_Dor)
+shapiro.test(residuals(Glucose_Model_Dor))
+hist(residuals(Glucose_Model_Dor))
 
-Glucose_Model3 <- lme(Glucose ~  treatment,
-                      random = ~1 | Clutch_ID,
-                      data = Glucose_timepoint_D_data)
+Glucose_Plot_dor <- ggplot(Glucose_timepoint_B_data, aes(x = treatment, y = Glucose, color = treatment)) +
+  # Add boxplots with adjusted dodge to avoid overlap
+  geom_boxplot(position = position_dodge(0.85)) +
+  # Add jittered points for individual data visualization
+  geom_jitter(width = 0.10, alpha = 0.5, size = 2) +
+  # Label the axes
+  ylab("Plasma Glucose Concentrations") +
+  xlab("Treatment") +
+  # Apply the same manual color scale (using specific indices from the palette)
+  scale_color_manual(values = c(cbbPalette[6], cbbPalette[7]), 
+                     name = "", 
+                     labels = c("", "")) +
+  # Use a classic theme and customize text sizes and remove legend
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        legend.position = "none",
+        axis.title = element_text(color = "black", size = 14,face = "bold"),
+        axis.text = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 15))) +
+  # Add an asterisk at the top right corner of the plot
+  annotate("text", 
+           label = "*", 
+           x = 1.5, xend = 1.8, 
+           y = maxGlucoseB + y_offset_GlucoseB - line_offset_GlucoseB, 
+           yend = maxGlucoseB + y_offset_GlucoseB - line_offset_GlucoseB, 
+           size = 12, 
+           color = "black") +
+  # Draw a horizontal segment (line) underneath the asterisk
+  # Here, adjust x positions if you want the line wider or narrower.
+  annotate("segment", 
+           x = 1.2, xend = 1.8, 
+           y = maxGlucoseB + y_offset_GlucoseB - line_offset_GlucoseB, 
+           yend = maxGlucoseB + y_offset_GlucoseB - line_offset_GlucoseB, 
+           color = "black", 
+           size = 1) +
+  # Add the letter "B" at the top left (near the y-axis) as a figure label
+  annotate("text", 
+           x = -Inf, y = Inf, 
+           label = "B", 
+           hjust = -0.5, # Adjust horizontal justification to move it outside the plotting area
+           vjust = 1.5,  # Adjust vertical justification to fine-tune its placement
+           size = 8, 
+           color = "black", 
+           fontface = "bold")
+
+Glucose_Plot_dor
+
+Glucose_Model_3wks <- lme(Glucose ~  treatment,
+                          random = ~1 | Nest_ID,
+                          data = Glucose_timepoint_C_data)
 
 # Summary of the model
-summary(Glucose_Model3)
-anova(Glucose_Model3)
-shapiro.test(residuals(Glucose_Model3))
-hist(residuals(Glucose_Model3))
+summary(Glucose_Model_3wks)
+anova(Glucose_Model_3wks)
+shapiro.test(residuals(Glucose_Model_3wks))
+hist(residuals(Glucose_Model_3wks))
+
+Glucose_Plot_3wks <- ggplot(Glucose_timepoint_C_data, aes(x = treatment, y = Glucose, color = treatment)) +
+  # Add boxplots with adjusted dodge to avoid overlap
+  geom_boxplot(position = position_dodge(0.85)) +
+  # Add jittered points for individual data visualization
+  geom_jitter(width = 0.10, alpha = 0.5, size = 2) +
+  # Label the axes
+  ylab("Plasma Glucose Concentrations") +
+  xlab("Treatment") +
+  # Apply the same manual color scale (using specific indices from the palette)
+  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+                     name = "", 
+                     labels = c("", "")) +
+  # Use a classic theme and customize text sizes and remove legend
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        legend.position = "none",
+        axis.title = element_text(color = "black", size = 14,face = "bold"),
+        axis.text = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 15))) +
+  # Add the letter "C" at the top left (near the y-axis) as a figure label
+  annotate("text", 
+           x = -Inf, y = Inf, 
+           label = "C", 
+           hjust = -0.5, # Adjust horizontal justification to move it outside the plotting area
+           vjust = 1.5,  # Adjust vertical justification to fine-tune its placement
+           size = 8, 
+           color = "black", 
+           fontface = "bold")
+
+Glucose_Plot_3wks
+
+Glucose_Model_3month <- lme(Glucose ~  treatment,
+                            random = ~1 | Nest_ID,
+                            data = Glucose_timepoint_D_data)
+
+# Summary of the model
+summary(Glucose_Model_3month)
+anova(Glucose_Model_3month)
+shapiro.test(residuals(Glucose_Model_3month))
+hist(residuals(Glucose_Model_3month))
+
+Glucose_Plot_3month <- ggplot(Glucose_timepoint_D_data, aes(x = treatment, y = Glucose, color = treatment)) +
+  # Add boxplots with adjusted dodge to avoid overlap
+  geom_boxplot(position = position_dodge(0.85)) +
+  # Add jittered points for individual data visualization
+  geom_jitter(width = 0.10, alpha = 0.5, size = 2) +
+  # Label the axes
+  ylab("Plasma Glucose Concentrations") +
+  xlab("Treatment") +
+  # Apply the same manual color scale (using specific indices from the palette)
+  scale_color_manual(values = c(cbbPalette[7], cbbPalette[6]), 
+                     name = "", 
+                     labels = c("", "")) +
+  # Use a classic theme and customize text sizes and remove legend
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        legend.position = "none",
+        axis.title = element_text(color = "black", size = 14,face = "bold"),
+        axis.text = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 15))) +
+  # Add the letter "D" at the top left (near the y-axis) as a figure label
+  annotate("text", 
+           x = -Inf, y = Inf, 
+           label = "D", 
+           hjust = -0.5, # Adjust horizontal justification to move it outside the plotting area
+           vjust = 1.5,  # Adjust vertical justification to fine-tune its placement
+           size = 8, 
+           color = "black", 
+           fontface = "bold")
+
+Glucose_Plot_3month
+
+Combined_glucose_Plot <- grid.arrange(Glucose_Plot_pre,Glucose_Plot_dor, Glucose_Plot_3wks, Glucose_Plot_3month, nrow = 2)
+
+ggsave(Combined_glucose_Plot, file="Combined_glucose_Plot.jpg", dpi = 250, width = 20, height = 8)
 

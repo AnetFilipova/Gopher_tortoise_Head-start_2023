@@ -14,7 +14,7 @@ library(ggrepel) ## Will be used to label individual points on the plots
 rm(list=ls(all = TRUE)) 
 
 #### Data Preparation ####
-
+path<-setwd
 ## Reading the .csv file and exploring the structure of the data ##
 datum <- read.csv("Growth_data/Data/Growth_data_Working.csv", na.strings = "na")
 
@@ -514,3 +514,7 @@ ggsave(
   bg = "white",  # Fixes transparency issues
   device = "png"
 )
+
+
+list.files(all.files = TRUE)
+readLines(".gitignore")
