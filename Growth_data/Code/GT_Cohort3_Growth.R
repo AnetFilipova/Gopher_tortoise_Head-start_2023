@@ -24,9 +24,9 @@ str(datum)
 
 ## Filter out individuals where Tortoise_ID is equal to "Not_Viable" as well as specific IDs that need to be removed from the analyses ##
 ## Removing those individuals usin g the 'subset' function ##
-## The logical operator %in% checks if elements of Tortoise_ID are present in the given vector c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04") ##
+## The logical operator %in% checks if elements of Tortoise_ID are present in the given vector c("Not_Viable", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04") ##
 ## The operator ! returns the values from the column 'Tortoise_ID' that are NOT equal to any of the elements in the specified vector ##
-datum <- subset(datum, !(Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04")))
+datum <- subset(datum, !(Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04")))
 
 # Confirm the filtered dataset
 head(datum)
@@ -42,9 +42,6 @@ model_before <- lmer(Growth_rate_Before ~ Treatment + (1 | Nest_ID) + (1 | Tank)
 
 ## Summarize the results
 summary(model_before)
-
-## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
-confint(model_before) # The 95% CI is 0.05882025
 
 ## Post-hoc tests
 emmeans(model_before, pairwise ~ Treatment)
@@ -62,12 +59,44 @@ outliers_before_tortoise <- datum %>%
 # Print the outliers corresponding to individual Tortoise_ID
 print(outliers_before_tortoise)
 
+# Remove the outliers based on Tortoise_ID --> (GT2023_N05.03)
+datum_clean <- datum %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
+
+# Re-run the mixed model without the outliers and without Nest_ID since it showed 0 variance
+model_before_clean <- lmer(Growth_rate_Before ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
+
+# Summarize the new model
+summary(model_before_clean)
+
+## Post-hoc tests
+emmeans(model_before_clean, pairwise ~ Treatment)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_before <- resid(model_before_clean)
+
+shapiro.test(res_before) ### residuals are normal
+
+# Visual check
+qqnorm(res_before); qqline(res_before)
+hist(res_before, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower confidence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_before_clean) # The 95% CI is 0.09068128
+
+
+## Test for equality of variances between treatments
+bartlett_result <- bartlett.test(Growth_rate_Before ~ Treatment, data = datum_clean)
+print(bartlett_result) ## p-value = 0.7728 meaning there is not significant difference in variance between treatments
+
+
 #### Plotting the data ####
 
 ## Definining an object for a colour-blind friendly pallette ##
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-before <- ggplot(datum, aes(x = Treatment, y = Growth_rate_Before, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_Before, and color by Treatment
+before <- ggplot(datum_clean, aes(x = Treatment, y = Growth_rate_Before, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_Before, and color by Treatment
   geom_boxplot(position = position_dodge(0.85)) +  # Add boxplots with dodged positions to avoid overlap
   geom_jitter(width = 0.10, alpha = 0.5, size = 2) + # Add jittered points to show individual data points with some transparency defined by alpha = 0.5
   geom_text_repel(aes(label = Tank), size = 4, box.padding = 0.4, point.padding = 0.3, max.overlaps = 20) + # Add labels
@@ -92,12 +121,8 @@ model_during <- lmer(Growth_rate_During ~ Treatment + (1 | Nest_ID) + (1 | Tank)
 # Summarize the results
 summary(model_during)
 
-## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
-confint(model_during) # The 95% CI is 0.05889759
-
 # Post-hoc tests
 emmeans(model_during, pairwise ~ Treatment)
-
 
 #### Checking for outliers with z-scores > 3 meaning more than 3 standard deviations away from the mean, which is considered a stronger outlier ####
 # Calculate the z-scores for the Growth_rate_During variable
@@ -110,11 +135,42 @@ outliers_during_tortoise <- datum %>%
   select(Tortoise_ID, Growth_rate_During, z_score)
 
 # Print the outliers corresponding to individual Tortoise_ID
-print(outliers_during_tortoise)
+print(outliers_during_tortoise) ## Returns GT2023_N05.03
+
+# Remove the outliers
+datum_clean <- datum %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
+
+# Re-run the mixed model without the outliers
+model_during_clean <- lmer(Growth_rate_During ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
+
+# Summarize the new model
+summary(model_during_clean)
+
+## Post-hoc tests
+emmeans(model_during_clean, pairwise ~ Treatment)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_during <- resid(model_during_clean)
+
+shapiro.test(res_during) ## residuals are NOT normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_during); qqline(res_during)
+hist(res_during, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower confidence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_during_clean) # The 95% CI is 0.1168586
+
+
+## Test for equality of variances between treatments
+bartlett_result <- bartlett.test(Growth_rate_During ~ Treatment, data = datum_clean)
+print(bartlett_result) ## p-value = 1.831e-08 meaning there IS significant difference in variance between treatments (<0.001)
 
 
 ##### Plot the data #####
-during <- ggplot(datum, aes(x = Treatment, y = Growth_rate_During, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_During, and color by Treatment
+during <- ggplot(datum_clean, aes(x = Treatment, y = Growth_rate_During, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_During, and color by Treatment
   geom_boxplot(position = position_dodge(0.85)) +  # Add boxplots with dodged positions to avoid overlap
   geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) + # Add jittered points to show individual data points with some transparency defined by alpha = 0.5
   ylab("Growth Rate (g/day)") +  # Label the y-axis
@@ -150,24 +206,39 @@ outliers_3_Weeks_tortoise <- datum %>%
   select(Tortoise_ID, Growth_rate_3_Weeks_Post, z_score)
 
 # Print the outliers corresponding to individual Tortoise_ID
-print(outliers_3_Weeks_tortoise) ## Returns GT2023_N05.01 and GT2023_N17.03 as outliers
+print(outliers_3_Weeks_tortoise) ## Returns GT2023_N05.03
 
 # Remove the outliers based on Tortoise_ID
 datum_clean <- datum %>%
-  filter(!Tortoise_ID %in% c("GT2023_N05.01", "GT2023_N17.03"))
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
 
-# Re-run the mixed model without the outliers and without Nest_ID since it showed 0 variance
-model_3Weeks_clean <- lmer(Growth_rate_3_Weeks_Post ~ Treatment  + (1 | Tank), data = datum_clean)
+# Re-run the mixed model without the outliers
+model_3Weeks_clean <- lmer(Growth_rate_3_Weeks_Post ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
 
 # Summarize the new model
 summary(model_3Weeks_clean)
 
-## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
-confint(model_3Weeks_clean) ## The 95% CI is 0.2199788
-
 # Post-hoc tests
 emmeans(model_3Weeks_clean, pairwise ~ Treatment)
 
+##### Testing for normality
+# Extract residuals from your mixed model
+res_3Weeks <- resid(model_3Weeks_clean)
+
+shapiro.test(res_3Weeks) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_3Weeks); qqline(res_3Weeks)
+hist(res_3Weeks, breaks = 20, main = "Residuals Histogram")
+
+
+## Test for equality of variances between treatments
+bartlett_result <- bartlett.test(Growth_rate_3_Weeks_Post ~ Treatment, data = datum_clean)
+print(bartlett_result) ## p-value = 3.385e-07 meaning there IS significant difference in variance between treatments (<0.001)
+
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_3Weeks_clean) ## The 95% CI is 0.462427
 
 ###### Plot the data ######
 
@@ -194,9 +265,6 @@ model_3Months <- lmer(Growth_rate_3_Months_Post ~ Treatment + (1 | Nest_ID) + (1
 # Summarize the results
 summary(model_3Months)
 
-## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
-confint(model_3Months) # The 95% CI is 0.1626287
-
 # Post-hoc tests
 emmeans(model_3Months, pairwise ~ Treatment)
 
@@ -211,11 +279,43 @@ outliers_3_Months_tortoise <- datum %>%
   select(Tortoise_ID, Growth_rate_3_Months_Post, z_score)
 
 # Print the outliers corresponding to individual Tortoise_ID
-print(outliers_3_Months_tortoise)
+print(outliers_3_Months_tortoise) ## Returns GT2023_N05.03
+
+# Remove the outliers based on Tortoise_ID
+datum_clean <- datum %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
+
+# Re-run the mixed model without the outliers
+model_3Months_clean <- lmer(Growth_rate_3_Months_Post ~ Treatment  + (Nest_ID) + (1 | Tank), data = datum_clean)
+
+# Summarize the new model
+summary(model_3Months_clean)
+
+# Post-hoc tests
+emmeans(model_3Months_clean, pairwise ~ Treatment)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_3Weeks <- resid(model_3Weeks_clean)
+
+shapiro.test(res_3Weeks) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_3Weeks); qqline(res_3Weeks)
+hist(res_3Weeks, breaks = 20, main = "Residuals Histogram")
+
+
+## Test for equality of variances between treatments
+bartlett_result <- bartlett.test(Growth_rate_3_Months_Post ~ Treatment, data = datum_clean)
+print(bartlett_result) ## p-value = 3.385e-07 meaning there IS significant difference in variance between treatments (<0.001)
+
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_3Months) # The 95% CI is 0.3598
 
 ###### Plot the data ########
 
-three_months <- ggplot(datum, aes(x = Treatment, y = Growth_rate_3_Months_Post, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_3_Weeks_Post, and color by Treatment
+three_months <- ggplot(datum_clean, aes(x = Treatment, y = Growth_rate_3_Months_Post, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_3_Weeks_Post, and color by Treatment
   geom_boxplot(position = position_dodge(0.85)) +  # Add boxplots with dodged positions to avoid overlap
   geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) + # Add jittered points to show individual data points with some transparency defined by alpha = 0.5
   ylab("Growth Rate (g/day)") +  # Label the y-axis
@@ -231,12 +331,93 @@ three_months
 # Save file as PNG for final figure production
 ggsave(three_months, file="Growth_data/Growth_rate_3Months.png", width=9, height=7, dpi=600)
 
-######### Combine the results from all three models into one graph ##########
+######## Question 5: What is the effect of treatment on growth rate 1 Year Post Release, i.e. that is 1.4-1.5 year post-cold dormancy? ########
+model_1.5_Year <- lmer(Growth_rate_1.5_Year_Post ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = datum)
+
+nobs(model_1.5_Year)
+
+# Summarize the results
+summary(model_1.5_Year)
+
+# Post-hoc tests
+emmeans(model_1.5_Year, pairwise ~ Treatment)
+
+#### Checking for outliers with z-scores > 3 meaning more than 3 standard deviations away from the mean, which is considered a stronger outlier ####
+# Calculate the z-scores for the Growth_rate_1.5_Year_Post variable
+datum <- datum %>%
+  mutate(z_score = (Growth_rate_1.5_Year_Post - mean(Growth_rate_1.5_Year_Post, na.rm = TRUE)) / sd(Growth_rate_1.5_Year_Post, na.rm = TRUE))
+
+# Filter out outliers based on Tortoise_ID
+outliers_1.5_Year_Post <- datum %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Growth_rate_1.5_Year_Post, z_score)
+
+# Print the outliers corresponding to individual Tortoise_ID
+print(outliers_1.5_Year_Post) ## There are no outliers
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_3Weeks <- resid(model_3Weeks_clean)
+
+shapiro.test(res_3Weeks) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_3Weeks); qqline(res_3Weeks)
+hist(res_3Weeks, breaks = 20, main = "Residuals Histogram")
+
+
+## Test for equality of variances between treatments
+bartlett_result <- bartlett.test(Growth_rate_3_Months_Post ~ Treatment, data = datum)
+print(bartlett_result) ## p-value = 2.866e-05 meaning there IS significant difference in variance between treatments (<0.001)
+
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_1.5_Year) # The 95% CI is 0.2731129
+
+###### Plot the data ########
+
+Year_and_half_post <- ggplot(datum, aes(x = Treatment, y = Growth_rate_1.5_Year_Post, color = Treatment)) +  # Define aesthetics: x-axis as Treatment, y-axis as Growth_rate_3_Weeks_Post, and color by Treatment
+  geom_boxplot(position = position_dodge(0.85)) +  # Add boxplots with dodged positions to avoid overlap
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 2) + # Add jittered points to show individual data points with some transparency defined by alpha = 0.5
+  ylab("Growth Rate (g/day)") +  # Label the y-axis
+  xlab("Treatment") +  # Label the x-axis
+  scale_color_manual(values = c(cbbPalette[[6]], cbbPalette[[7]]), name = "", labels = c("", "")) + # Manually set colors and labels for the Treatment variable
+  theme_classic() +  
+  theme(strip.background = element_blank(), legend.position = "none", # Removing the default grey facet background as well as the legend by specifying 'none'
+        axis.title = element_text(size = 18),  # Increase axis labels size
+        axis.text = element_text(size = 14)    # Increase tick labels (treatment labels) size
+  )  
+Year_and_half_post
+
+
+####### Correction for multiple testing using Bonferonni test using the p-values without the outliers ####
+
+pvals <- c(
+  p_before = 0.0132,
+  p_during = 0.0001,
+  p_3Weeks = 0.0004,
+  p_3Months = 0.9167,
+  p_1.5Year = 0.8563
+)
+
+# Bonferroni-adjusted p-values
+pvals_bonf <- p.adjust(pvals, method = "bonferroni")
+pvals_bonf ### The Before timepoint is no longer significant after the Bonferonni test
+
+
+# Save file as PNG for final figure production
+ggsave(Year_and_half_post, file="Growth_data/Growth_rate_1.5_Year_Post.png", width=9, height=7, dpi=600)
+
+
+######### Combine the results from all four models into one graph ##########
+
+library(tidyverse)
 
 # Reshape data to long format
 datum_long <- datum %>%
   pivot_longer(
-    cols = c(Growth_rate_Before, Growth_rate_During, Growth_rate_3_Weeks_Post, Growth_rate_3_Months_Post),
+    cols = c(Growth_rate_Before, Growth_rate_During, Growth_rate_3_Weeks_Post, 
+             Growth_rate_3_Months_Post, Growth_rate_1.5_Year_Post),
     names_to = "Timepoint",
     values_to = "Growth_rate"
   )
@@ -244,29 +425,59 @@ datum_long <- datum %>%
 # Adjust the Timepoint column for better labels
 datum_long$Timepoint <- factor(
   datum_long$Timepoint,
-  levels = c("Growth_rate_Before", "Growth_rate_During", "Growth_rate_3_Weeks_Post", "Growth_rate_3_Months_Post"),
-  labels = c("Before", "During", "3-Wk.Post", "3-Mo.Post")
+  levels = c("Growth_rate_Before", "Growth_rate_During", 
+             "Growth_rate_3_Weeks_Post", "Growth_rate_3_Months_Post", 
+             "Growth_rate_1.5_Year_Post"),
+  labels = c(
+    "Fall 2023\n(Hatch–Before)", 
+    "Winter 2023\n(Before–During)", 
+    "Early Spring 2024\n(During–3-Wk.Post)", 
+    "Late Spring 2024\n(3-Wk.Post–3-Mo.Post)",
+    "Summer 2025\n(3-Mo.Post–1.5-Year-Post)"
+  )
 )
 
+# Define Bonferroni-corrected p-values
+pvals_bonf <- c(0.07, 0.0005, 0.002, 1.0, 1.0)
 
-### Plot the combined data ###
+# Corresponding significance labels
+sig_labels <- c("", "***", "**", "", "")
+
+# Define y position dynamically based on data range
+ypos <- max(datum_long$Growth_rate, na.rm = TRUE) + 0.02
+line_y <- ypos - 0.005
+
+# Build plot
 combined <- ggplot(datum_long, aes(x = Timepoint, y = Growth_rate, color = Treatment)) +
   geom_boxplot(outlier.shape = NA, width = 0.6, position = position_dodge(0.8), 
-               fill = "white", alpha = 0.5, linewidth = 0.5) +  # Boxplot with dodging
+               fill = "white", alpha = 0.5, linewidth = 0.5) +
   geom_jitter(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8), 
-              size = 2, alpha = 0.4) +  # Jitter points with dodging
+              size = 2, alpha = 0.4) +
   stat_summary(fun = mean, geom = "point", size = 2, aes(group = Treatment), 
-               position = position_dodge(width = 0.8)) +  # Mean points, properly dodged
+               position = position_dodge(width = 0.8)) +
   stat_summary(fun = mean, geom = "line", aes(group = Treatment), linewidth = 0.6, 
-               position = position_dodge(width = 0.8)) +  # Mean lines, properly dodged
-  theme_classic () +
+               position = position_dodge(width = 0.8)) +
+  
+  # --- Significance annotations based on Bonferroni results ---
+  # Winter 2023 (***)
+  geom_segment(aes(x = 1.85, xend = 2.15, y = line_y, yend = line_y), 
+               color = "black", linewidth = 0.5, inherit.aes = FALSE) +
+  annotate("text", x = 2, y = ypos, label = "***", size = 7, fontface = "bold") +
+  
+  # Early Spring 2024 (**)
+  geom_segment(aes(x = 2.85, xend = 3.15, y = line_y, yend = line_y), 
+               color = "black", linewidth = 0.5, inherit.aes = FALSE) +
+  annotate("text", x = 3, y = ypos, label = "**", size = 7, fontface = "bold") +
+  # -------------------------------------------------------------
+
+theme_classic() +
   theme(
     panel.grid = element_blank(),
-    axis.title.x = element_text(size = 14, face = "bold", margin = margin(t = 30, b = 15)),
-    axis.title.y = element_text(size = 14, face = "bold", margin = margin(r = 10)),
-    axis.text = element_text(size = 13),
+    axis.title.x = element_text(size = 18, face = "bold", margin = margin(t = 20, b = 10)),
+    axis.title.y = element_text(size = 18, face = "bold", margin = margin(r = 20)),
+    axis.text = element_text(size = 11),
     legend.title = element_text(size = 14, face = "bold"),
-    legend.text = element_text(size = 14),
+    legend.text = element_text(size = 11),
     legend.position = "right",
     legend.title.align = 0.5
   ) +
@@ -276,29 +487,29 @@ combined <- ggplot(datum_long, aes(x = Timepoint, y = Growth_rate, color = Treat
     labels = c("Cold-Dormancy", "Constant-Warmth")
   ) +
   labs(
-    x = "Timepoint",  
+    x = "Time Interval",  
     y = "Growth rate (g/day)"
   )
 
+# Show plot
 combined
 
-# Save file as PNG for final figure production
-ggsave(combined, file = "Growth_data/Combined_Growth_rate.png", width = 12, height = 6, dpi = 600)
-
+# Save high-resolution figure
+ggsave("Growth_data/Combined_Growth_rate.png", plot = combined, width = 12, height = 6, dpi = 600)
 
 
 ########## Body size across treatments and across timepoints #############
 
 # Define list of tortoises to exclude
 datum_filtered <- datum %>%
-  filter(!Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04"))
+  filter(!Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04"))
 
 # Reshape to long format and keep Nest_ID and Tank
 datum_long <- datum_filtered %>%
-  select(Tortoise_ID, Treatment, Nest_ID, Tank, CL_10, CL_15, CL_16, CL_19) %>%
+  select(Tortoise_ID, Treatment, Nest_ID, Tank, CL_10, CL_15, CL_16, CL_19, CL_20) %>%
   pivot_longer(cols = starts_with("CL_"), names_to = "Timepoint", values_to = "SCL") %>%
   mutate(
-    Timepoint = factor(Timepoint, levels = c("CL_10", "CL_15", "CL_16", "CL_19")),
+    Timepoint = factor(Timepoint, levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20")),
     Nest_ID = as.factor(Nest_ID),
     Tank = as.factor(Tank)
   )
@@ -333,6 +544,20 @@ outliers_SCL_CL10 <- datum_long_CL10 %>%
 
 print(outliers_SCL_CL10) ## there are no outliers
 
+##### Testing for normality
+# Extract residuals from your mixed model
+res_cl10 <- resid(model_cl10)
+
+shapiro.test(res_cl10) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_cl10); qqline(res_cl10)
+hist(res_cl10, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_cl10) # The 95% CI is 3.425589
+
+
 ##### Model During #####
 cl15_data <- datum_long %>% filter(Timepoint == "CL_15")
 
@@ -357,7 +582,36 @@ outliers_SCL_CL15 <- datum_long_CL15 %>%
   filter(abs(z_score) > 3) %>%
   select(Tortoise_ID, Timepoint, SCL, z_score)
 
-print(outliers_SCL_CL15) ## there are no outliers
+print(outliers_SCL_CL15) ## Returns GT2023_05.03
+
+# Remove the outliers based on Tortoise_ID
+datum_clean <- cl15_data %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
+
+# Re-run the mixed model without the outliers
+model_cl15_clean <- lmer(SCL ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
+
+# Summarize the new model
+summary(model_cl15_clean)
+
+emmeans_cl15_clean <- emmeans(model_cl15_clean, pairwise ~ Treatment)
+
+summary(emmeans_cl15_clean$emmeans) # Post-hoc comparisson
+summary(emmeans_cl15_clean$contrasts)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_cl15 <- resid(model_cl15_clean)
+
+shapiro.test(res_cl15) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_cl15); qqline(res_cl15)
+hist(res_cl15, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_cl15_clean) # The 95% CI is 3.791568
+
 
 ##### Model 3 Weeks Post #####
 
@@ -384,7 +638,35 @@ outliers_SCL_CL16 <- datum_long_CL16 %>%
   filter(abs(z_score) > 3) %>%
   select(Tortoise_ID, Timepoint, SCL, z_score)
 
-print(outliers_SCL_CL16) ## there are no outliers
+print(outliers_SCL_CL16) ## Returns GT2023_N05.03
+
+# Remove the outliers based on Tortoise_ID
+datum_clean <- cl16_data %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
+
+# Re-run the mixed model without the outliers
+model_cl16_clean <- lmer(SCL ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
+
+# Summarize the new model
+summary(model_cl16_clean)
+
+emmeans_cl16_clean <- emmeans(model_cl16_clean, pairwise ~ Treatment)
+
+summary(emmeans_cl16_clean$emmeans) # Post-hoc comparisson
+summary(emmeans_cl16_clean$contrasts)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_cl16 <- resid(model_cl16_clean)
+
+shapiro.test(res_cl16) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_cl16); qqline(res_cl16)
+hist(res_cl16, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_cl16_clean) # The 95% CI is 4.411687
 
 ###### Model 3 Months Post #####
 cl19_data <- datum_long %>% filter(Timepoint == "CL_19")
@@ -410,110 +692,191 @@ outliers_SCL_CL19 <- datum_long_CL19 %>%
   filter(abs(z_score) > 3) %>%
   select(Tortoise_ID, Timepoint, SCL, z_score)
 
-print(outliers_SCL_CL19) ## Tortoise GT2023_N05.01 was identified as an outlier so will be removed from the model
+print(outliers_SCL_CL19) ## Returns GT2023_N05.03
 
+# Remove the outliers based on Tortoise_ID
+datum_clean <- cl19_data %>%
+  filter(!Tortoise_ID %in% c("GT2023_N05.03"))
 
-# Remove the outlier from the CL_19 dataset
-datum_long_CL19_no_outlier <- datum_long_CL19 %>%
-  filter(Tortoise_ID != "GT2023_N05.01")
+# Re-run the mixed model without the outliers
+model_cl19_clean <- lmer(SCL ~ Treatment  + (1 | Nest_ID) + (1 | Tank), data = datum_clean)
 
-# Rerun the model without the outlier
-model_cl19_no_outlier <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = datum_long_CL19_no_outlier)
+# Summarize the new model
+summary(model_cl19_clean)
 
-# Summary of the model
-summary(model_cl19_no_outlier)
+emmeans_cl19_clean <- emmeans(model_cl19_clean, pairwise ~ Treatment)
 
-# Post-hoc comparison (if needed)
-emmeans_cl19_no_outlier <- emmeans(model_cl19_no_outlier, pairwise ~ Treatment)
-summary(emmeans_cl19_no_outlier$emmeans)
-summary(emmeans_cl19_no_outlier$contrasts)
+summary(emmeans_cl19_clean$emmeans) # Post-hoc comparisson
+summary(emmeans_cl19_clean$contrasts)
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_cl19 <- resid(model_cl19_clean)
+
+shapiro.test(res_cl19) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_cl19); qqline(res_cl19)
+hist(res_cl19, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_cl19_clean) # The 95% CI is  6.133489
+
+###### Model 1.5 Year Post ##### 
+
+cl20_data <- datum_long %>% filter(Timepoint == "CL_20")
+
+model_cl20 <- lmer(SCL ~ Treatment + (1 | Nest_ID) + (1 | Tank), data = cl20_data)
+
+summary(model_cl20)
+
+emmeans_cl20 <- emmeans(model_cl20, pairwise ~ Treatment)
+summary(emmeans_cl20$emmeans) 
+
+## Post-hoc comparison 
+summary(emmeans_cl20$contrasts)
+
+# Calculate the z-scores for the SCL at CL_20 to test for outliers 
+datum_long_CL20 <- datum_long %>% filter(Timepoint == "CL_20")
+
+datum_long_CL20 <- datum_long_CL20 %>% mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE))
+
+# Now filter the outliers for CL_20 specifically
+outliers_SCL_CL20 <- datum_long_CL20 %>%
+  filter(abs(z_score) > 3) %>%
+  select(Tortoise_ID, Timepoint, SCL, z_score)
+
+print(outliers_SCL_CL20) ## There are no outliers
+
+##### Testing for normality
+# Extract residuals from your mixed model
+res_cl20 <- resid(model_cl20)
+
+shapiro.test(res_cl20) ## residuals are normally distribued but there are no long tails on the histogram
+
+# Visual check
+qqnorm(res_cl20); qqline(res_cl20)
+hist(res_cl20, breaks = 20, main = "Residuals Histogram")
+
+## Printing the 2.5% lower conficence limit and the 97.5% upper confidence limit to calculate the 95% confidence interval
+confint(model_cl20) # The 95% CI is 15.87965
+
+####### Correction for multiple testing using Bonferonni test using the p-values without the outliers ####
+
+pvals <- c(
+  p_before = 0.0066,
+  p_during =  0.0001,
+  p_3Weeks = 0.0001,
+  p_3Months = 0.0001,
+  p_1.5Year = 0.0259
+)
+
+# Bonferroni-adjusted p-values
+pvals_bonf <- p.adjust(pvals, method = "bonferroni")
+pvals_bonf ### The Before timepoint is no longer significant after the Bonferonni test
+
 
 ### Plotting Body Size data #####
 
 # Define color palette
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-# Remove NAs and the specified individuals for plotting
-datum_long_clean <- datum_long %>%
-  filter(!is.na(SCL)) %>%  # Remove NAs in SCL
-  filter(!(Tortoise_ID %in% c("Not_Viable", "GT2023_N05.03", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04", "GT2023_N05.01")))  # Remove specified individuals
+### Plotting Body Size data #####
 
-# Summarize mean and standard error of SCL for plotting
-summary_data <- datum_long_clean %>%
-  group_by(Timepoint, Treatment) %>%
-  summarise(
-    mean_SCL = mean(SCL, na.rm = TRUE),
-    se_SCL = sd(SCL, na.rm = TRUE) / sqrt(n()),
-    .groups = "drop"
+##### Prepare the data in long format #####
+datum_long <- datum %>%
+  filter(!Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04")) %>%
+  select(Tortoise_ID, Treatment, Nest_ID, Tank, CL_10, CL_15, CL_16, CL_19, CL_20) %>%
+  pivot_longer(
+    cols = starts_with("CL_"),
+    names_to = "Timepoint",
+    values_to = "SCL"
+  ) %>%
+  mutate(
+    Timepoint = factor(
+      Timepoint,
+      levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20"),
+      labels = c(
+        "Fall 2023\n(Hatch–Before)", 
+        "Winter 2023\n(Before–During)", 
+        "Early Spring 2024\n(During–3-Wk.Post)", 
+        "Late Spring 2024\n(3-Wk.Post–3-Mo.Post)", 
+        "Summer 2025\n(3-Mo.Post–1.5-Year-Post)"
+      )
+    )
   )
 
-# Re-label timepoints for better axis display
-timepoint_labels <- c("CL_10" = "Before", 
-                      "CL_15" = "During", 
-                      "CL_16" = "3-Wk.Post", 
-                      "CL_19" = "3-Mo.Post")
+#### Remove outliers by timepoint ####
+datum_long <- datum_long %>%
+  group_by(Timepoint) %>% 
+  mutate(z_score = (SCL - mean(SCL, na.rm = TRUE)) / sd(SCL, na.rm = TRUE)) %>%
+  filter(abs(z_score) <= 3 | is.na(z_score)) %>%
+  ungroup() %>%
+  select(-z_score)
 
-# Create the matching body size boxplot
-body_size_box <- ggplot(datum_long_clean, aes(x = Timepoint, y = SCL, color = Treatment)) +
-  geom_boxplot(outlier.shape = NA, width = 0.6, position = position_dodge(0.8),
+### Bonferroni-corrected p-values ###
+pvals <- c(0.033, 0.0005, 0.0005, 0.0005, 0.1295)
+
+# Assign significance labels
+sig_labels <- ifelse(pvals < 0.001, "***",
+                     ifelse(pvals < 0.01, "**",
+                            ifelse(pvals < 0.05, "*", "")))
+
+# Create a data frame for significance annotations
+sig_df <- data.frame(
+  xstart = 1:5 - 0.15,
+  xend   = 1:5 + 0.15,
+  xtext  = 1:5,
+  y      = max(datum_long$SCL, na.rm = TRUE) + 2,
+  label  = sig_labels
+)
+
+### Build the plot ###
+body_size <- ggplot(datum_long, aes(x = Timepoint, y = SCL, color = Treatment)) +
+  geom_boxplot(outlier.shape = NA, width = 0.6, position = position_dodge(0.8), 
                fill = "white", alpha = 0.5, linewidth = 0.5) +
-  geom_jitter(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8),
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8), 
               size = 2, alpha = 0.4) +
-  stat_summary(fun = mean, geom = "point", size = 2, aes(group = Treatment),
+  stat_summary(fun = mean, geom = "point", size = 2, aes(group = Treatment), 
                position = position_dodge(width = 0.8)) +
-  stat_summary(fun = mean, geom = "line", aes(group = Treatment),
-               linewidth = 0.6, position = position_dodge(width = 0.8)) +
-  scale_color_manual(
-    values = cbbPalette[c(6, 7)],
-    name = "Treatment",
-    labels = c("Cold-Dormancy", "Constant-Warmth")
-  ) +
-  scale_x_discrete(labels = timepoint_labels) +  # <- relabel the timepoints here
+  stat_summary(fun = mean, geom = "line", aes(group = Treatment), linewidth = 0.6, 
+               position = position_dodge(width = 0.8)) +
+  
+  # Add significance annotations dynamically
+  geom_segment(data = sig_df[sig_df$label != "", ], 
+               aes(x = xstart, xend = xend, y = y - 1, yend = y - 1),
+               inherit.aes = FALSE, color = "black", linewidth = 0.5) +
+  geom_text(data = sig_df[sig_df$label != "", ],
+            aes(x = xtext, y = y, label = label),
+            inherit.aes = FALSE, size = 7, fontface = "bold") +
+  
   theme_classic() +
   theme(
     panel.grid = element_blank(),
-    axis.title.x = element_text(size = 14, face = "bold", margin = margin(t = 30, b = 15)),
-    axis.title.y = element_text(size = 14, face = "bold", margin = margin(r = 10)),
-    axis.text = element_text(size = 13),
+    axis.title.x = element_text(size = 18, face = "bold", margin = margin(t = 20, b = 10)),
+    axis.title.y = element_text(size = 18, face = "bold", margin = margin(r = 20)),
+    axis.text = element_text(size = 11),
     legend.title = element_text(size = 14, face = "bold"),
-    legend.text = element_text(size = 14),
+    legend.text = element_text(size = 11),
     legend.position = "right",
     legend.title.align = 0.5
   ) +
+  scale_color_manual(
+    values = cbbPalette[c(6, 7)], 
+    name = "Treatment", 
+    labels = c("Cold-Dormancy", "Constant-Warmth")
+  ) +
   labs(
-    x = "Timepoint",
+    x = "Time Interval",  
     y = "Mean SCL (mm)"
   )
 
-body_size_box
+### Show the plot ##
+body_size
 
+#### Save high-resolution figure ####
+ggsave("Growth_data/Combined_Body_size.png", plot = body_size, width = 12, height = 6, dpi = 600)
 
-# Save the plot as PNG for final figure production
-ggsave(body_size_box, file = "Growth_data/Body_size.png", width = 12, height = 6, dpi = 600)
-
-###### Combining figures for growth rate and body size together #######
-final_figure <- ggarrange(
-  body_size_box,  
-  combined,   
-  labels = c("A", "B"),  # Use capital letters for labels
-  ncol = 2,  
-  common.legend = TRUE,  
-  legend = "right",  
-  label.x = 0.2  # Move labels slightly to the right
-)
-
-final_figure
-
-## Save as png Final Combine figure ##
-ggsave(
-  filename = "Growth_data/Final_Combined_Figure.png",
-  plot = final_figure,
-  width = 12,
-  height = 8,
-  dpi = 600,
-  bg = "white",  # Fixes transparency issues
-  device = "png"
-)
 
 
 list.files(all.files = TRUE)
