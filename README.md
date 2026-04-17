@@ -7,27 +7,46 @@ Data, code and results for each separate analysis are contained in this project,
 
 Please use the following DOI to cite this data and associated functions/analyses.
 
-[![DOI](https://zenodo.org/badge/942427473.svg)](https://doi.org/10.5281/zenodo.14977202)
+[![DOI](https://zenodo.org/badge/971060862.svg)](https://doi.org/10.5281/zenodo.15273407)
+
+test 
+
+
 
 ### Overview
 
 ```Gopher_tortoise_Head-start_2023/
 ├── Gopher_tortoise_Head-start_2023.Rproj
+│
 ├── Growth_data/
 │   ├── Code/
-│   │   └── [GT_Cohort3_Growth.R]            # Analysis for growth rate and body size differences
+│   │   └── GT_Cohort3_Growth.R              # Analysis for growth rate and body size differences
 │   ├── Data/
-│   │   ├── [Growth_Metadata.xlsx]           # Growth metadata (Nest_ID, measurements, etc.)
-│   │   └── [Growth_data_Working.csv]        # Cleaned growth data used in analysis
-│   └── Figures                              # All the figures produced from growth analysis
-│    
+│   │   ├── Growth_Metadata.xlsx             # Growth metadata (Nest_ID, measurements, etc.)
+│   │   └── Growth_data_Working.csv          # Cleaned growth data used in analysis
+│   ├── Figures/                             # All the figures produced from growth analysis
+│   ├── GT_Growth.Rmd                        # R Markdown for growth/body size analysis
+│   ├── GT_Growth.html                       # Rendered HTML output
+│   ├── GT_Growth.pdf                        # Rendered PDF output of the growth/body size analysis
+│   └── GT_Growth.md                         # Markdown export of the Rmd file
+│
 ├── Metabolomics/
 │   └── [metabolomics analysis files/scripts]
+│
 ├── Telo_mtDNA/
+│   ├── qPCR_PlateReviewData_2_25_25.xlsx    # Plate review metadata for qPCR
 │   └── Manuscript_Analysis/
-│       ├── R/
-│       │   └── [telomere and mtDNA R scripts]
-│       └── data/
-│           └── [telomere/mtDNA data files]
+│       ├── Code/
+│       │   └── [GT_MtDNA_Telo.R]            # Analysis for telomere length and mtDNA density differences
+│       ├── Data/
+│       │   └── [telomere/mtDNA data files]  # qPCR exported files, trait metadata, etc.
+│       ├── Figures/                         # All figures generated from telomere/mtDNA analyses
+│       ├── Telo_mtDNA.Rmd                   # R Markdown for telomeres/mtDNA analysis
+│       ├── Telo_mtDNA.html                  # Rendered HTML output
+│       ├── Telo_mtDNA.pdf                   # Rendered PDF output of the telomeres/mtDNA analysis
+│       └── Telo_mtDNA.md                    # Markdown export of the Rmd file
 
 ```
+### Software
+
+All the analyses were performed in Rstudio version 2024.12.1. The packages needed for each analysis are specified in the corresponding script.
