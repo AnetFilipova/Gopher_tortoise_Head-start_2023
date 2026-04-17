@@ -1,0 +1,10 @@
+Type,Group,Condition,Concentration_mg_dL,Absorbance
+Standard,Standard,0,0,0.000
+Standard,Standard,50,50,0.161
+Standard,Standard,100,100,0.300
+Standard,Standard,150,150,0.4855
+Standard,Standard,200,200,0.562
+Sample,Constant Warmth,Undiluted,128.1,0.4095
+Sample,Constant Warmth,1:2 Diluted,62.9,0.227
+Sample,Cold Dormancy,Undiluted,58.1,0.2135
+Sample,Cold Dormancy,1:2 Diluted,25.4,0.122
