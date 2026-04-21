@@ -43,6 +43,7 @@ Please use the following DOI to cite this data and associated analyses.
 
 All the analyses were performed in Rstudio Version 2025.09.0. The packages needed for each analysis are specified in the corresponding script.
 
-![Uploading IMG_9921.png…]()
+<img width="3024" height="4032" alt="IMG_9921" src="https://github.com/user-attachments/assets/d4ebe080-a27c-492f-8a6f-09220cb804b6" />
+
 
 
