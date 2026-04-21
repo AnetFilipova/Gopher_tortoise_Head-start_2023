@@ -1764,8 +1764,7 @@ mtdna_plot <- ggplot() +
 mtdna_plot
 
 # Save the plot
-ggsave(mtdna_plot, file = "Telo_mtDNA/Figures/mtDNA_Treatment.png", 
-       width = 9, height = 7, dpi = 600)
+ggsave(mtdna_plot, file = "Telo_mtDNA/Figures/mtDNA_Treatment.png", width = 9, height = 7, dpi = 600)
 
 # Sample size by Treatment and Time_Point
 sample_sizes <- mtdna_data %>%
@@ -1773,6 +1772,11 @@ sample_sizes <- mtdna_data %>%
   summarise(n = n(), .groups = 'drop')
 
 print(sample_sizes)
+
+###### Saving the mtDNA_Treatment.png as an object so I can reload it in the Metabolites script and
+# combine the metabolites figures into one 4-panel plot
+
+saveRDS(mtdna_plot, file = "Telo_mtDNA/Figures/mtdna_plot.rds")
 
 
 ###########################################################
