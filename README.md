@@ -25,8 +25,11 @@ Please use the following DOI to cite this data and associated analyses.
 │   │   └── Growth_data_Working.csv          # Cleaned growth data used in analysis
 │   ├── Figures/                             # All the figures produced from the morphology analysis
 │
-├── Metabolomics/
-│   └── [metabolomics analysis files/scripts]
+├── Metabolites/
+|   ├── Code/
+│   │   └── GT_Metabolites_Analysis_Repeated_Measures.R    # Analysis for metabolite measures (glucose, triglycerides, glucose)
+│   ├── Data/                                              # Masterdatasets for each metabolite separately + triglyceride dilution linearity
+│   ├── Figures/                                           # All the figures produced from the metabolite measures
 │
 ├── Telo_mtDNA/
 │   ├── qPCR_PlateReviewData_2_25_25.xlsx    # Plate review metadata for qPCR
