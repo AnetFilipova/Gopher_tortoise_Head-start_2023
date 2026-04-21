@@ -1,15 +1,14 @@
 ### Exploring the effects of first year cold-dormancy on the phenotypic, molecular and metabolic responses in head-started Gopher tortoises (*Gopherus polyphemus*). ###
 
-This repository contains data and code for estimating differences in: growth rate, telomere lenght, mitochondrial DNA density, and metabolic measures (glucose, acetyl CoA, triglycerides) between two groups of head-started Gopher tortoises from Alabama, US. The two treatment groups are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
-Data, code and results for each separate analysis are contained in this project, but there are independent Rmarkdown documents for each analysis that can be found within the folder for the respective analysis.
+This repository contains data and code for exploring differences in: body size, growth rate, change in telomere lenght, and metabolic measures (mitochondrial DNA density, glucose, triglycerides and acetyl CoA) between two treatments of head-started Gopher tortoises from Alabama, US. The two treatments are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
+Data, code and results can be found within the folder for each respective analysis.
 
 ### Citation
 
-Please use the following DOI to cite this data and associated functions/analyses.
+Please use the following DOI to cite this data and associated analyses.
 
 [![DOI](https://zenodo.org/badge/971060862.svg)](https://doi.org/10.5281/zenodo.15273407)
 
-test 
 
 
 
@@ -20,15 +19,11 @@ test
 │
 ├── Growth_data/
 │   ├── Code/
-│   │   └── GT_Cohort3_Growth.R              # Analysis for growth rate and body size differences
+│   │   └── GT_Growth_Repeated_Measures.R    # Analysis for body size and growth rate differences
 │   ├── Data/
-│   │   ├── Growth_Metadata.xlsx             # Growth metadata (Nest_ID, measurements, etc.)
+│   │   ├── Growth_Metadata.xlsx             # Growth metadata (Tortoise IDs Nest IDs, Tanks, treatments, measurements, sampling timepoints)
 │   │   └── Growth_data_Working.csv          # Cleaned growth data used in analysis
-│   ├── Figures/                             # All the figures produced from growth analysis
-│   ├── GT_Growth.Rmd                        # R Markdown for growth/body size analysis
-│   ├── GT_Growth.html                       # Rendered HTML output
-│   ├── GT_Growth.pdf                        # Rendered PDF output of the growth/body size analysis
-│   └── GT_Growth.md                         # Markdown export of the Rmd file
+│   ├── Figures/                             # All the figures produced from the morphology analysis
 │
 ├── Metabolomics/
 │   └── [metabolomics analysis files/scripts]
