@@ -1,16 +1,18 @@
 #### Exploring the effects of first-year cold-dormancy on the change in telomere length and mitochondrial DNA density in blood cells of head-started Gopher tortoises ####
 
 ## Load the necessary libraries ##
+library(lme4)        
+library(lmerTest)    
+library(emmeans)     
+library(car)        
+library(scales)      
+library(ggplot2)     
+library(readr)       
+library(tidyr)     
+library(stringr)     
 library(dplyr)
-library(stringr)
-library(tidyr)
-library(readr)
-library(lme4)
-library(lmerTest)
-library(emmeans)
-library(ggplot2)
-library(car)
-library(scales)
+library(patchwork)   
+library(cowplot)    
 
 ## Use dplyr versions of these functions ##
 rename <- dplyr::rename
