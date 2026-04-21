@@ -36,7 +36,7 @@ Please use the following DOI to cite this data and associated analyses.
 │       ├── GT_MtDNA_Telo_Repeated_Measures.R              # Analysis for change in telomere length and mtDNA density from qPCR
 │       └── GT_MtDNA_CV_Calculations.R                     # Analysis for calculating coefficient of variation (CV) between qPCR plates
 │   ├── Data/                                              # qPCR exported files, trait metadata
-│   ├── Figures/                         # All figures generated for telomere/mtDNA
+│   ├── Figures/                                           # All figures generated for telomere/mtDNA
 
 ```
 ### Software
