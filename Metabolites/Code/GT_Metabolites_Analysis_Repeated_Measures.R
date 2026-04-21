@@ -1029,3 +1029,53 @@ Glucose_Plot <- ggplot() +
 Glucose_Plot
 
 ggsave(Glucose_Plot, file="Metabolites/Figures/Glucose.png", width=9, height=7, dpi=600)
+
+
+####### Combining the 4 separate figures for mtDNA_Treatment, Glucose, Triglycerides and Acetyl-CoA into one 4-panel figure
+
+## this object comes from the Telo_mtDNA script so we're importing it
+mtdna_plot <- readRDS("Telo_mtDNA/Figures/mtdna_plot.rds")
+
+single_legend <- get_legend(
+  mtdna_plot + 
+    theme(legend.position = "right",
+          legend.title = element_text(size = 14, face = "bold"),
+          legend.text = element_text(size = 12))
+)
+
+# Remove all legends from individual plots and add tags inside panels
+p1 <- mtdna_plot + 
+  annotate("text", x = -Inf, y = Inf, label = "A", 
+           hjust = -0.3, vjust = 1.5, 
+           fontface = "bold", size = 7) +
+  theme(legend.position = "none")
+
+p2 <- Glucose_Plot + 
+  annotate("text", x = -Inf, y = Inf, label = "B", 
+           hjust = -0.3, vjust = 1.5, 
+           fontface = "bold", size = 7) +
+  theme(legend.position = "none")
+
+p3 <- TRIG_ALL_Before_Combined_Plot + 
+  annotate("text", x = -Inf, y = Inf, label = "C", 
+           hjust = -0.3, vjust = 1.5, 
+           fontface = "bold", size = 7) +
+  theme(legend.position = "none")
+
+p4 <- ECOA_Plot + 
+  annotate("text", x = -Inf, y = Inf, label = "D", 
+           hjust = -0.3, vjust = 1.5, 
+           fontface = "bold", size = 7) +
+  theme(legend.position = "none")
+
+grid_no_legend <- (p1 + p2) / (p3 + p4)
+
+combined_4panel <- plot_grid(grid_no_legend, single_legend, 
+                             ncol = 2, 
+                             rel_widths = c(1, 0.07))
+combined_4panel
+
+ggsave(combined_4panel, 
+       file = "Metabolites/Figures/Combined_Metabolites.png", 
+       width = 22, height = 12, 
+       dpi = 1200)
