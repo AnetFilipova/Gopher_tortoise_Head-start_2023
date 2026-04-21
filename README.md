@@ -29,22 +29,16 @@ Please use the following DOI to cite this data and associated analyses.
 |   ├── Code/
 │   │   └── GT_Metabolites_Analysis_Repeated_Measures.R    # Analysis for metabolite measures (glucose, triglycerides, glucose)
 │   ├── Data/                                              # Masterdatasets for each metabolite separately + triglyceride dilution linearity
-│   ├── Figures/                                           # All the figures produced from the metabolite measures
+│   ├── Figures/                                           # All the figures produced for the metabolite measures
 │
 ├── Telo_mtDNA/
-│   ├── qPCR_PlateReviewData_2_25_25.xlsx    # Plate review metadata for qPCR
-│   └── Manuscript_Analysis/
-│       ├── Code/
-│       │   └── [GT_MtDNA_Telo.R]            # Analysis for telomere length and mtDNA density differences
-│       ├── Data/
-│       │   └── [telomere/mtDNA data files]  # qPCR exported files, trait metadata, etc.
-│       ├── Figures/                         # All figures generated from telomere/mtDNA analyses
-│       ├── Telo_mtDNA.Rmd                   # R Markdown for telomeres/mtDNA analysis
-│       ├── Telo_mtDNA.html                  # Rendered HTML output
-│       ├── Telo_mtDNA.pdf                   # Rendered PDF output of the telomeres/mtDNA analysis
-│       └── Telo_mtDNA.md                    # Markdown export of the Rmd file
+│   ├── Code/
+│       ├── GT_MtDNA_Telo_Repeated_Measures.R              # Analysis for change in telomere length and mtDNA density from qPCR
+│       └── GT_MtDNA_CV_Calculations.R                     # Analysis for calculating coefficient of variation (CV) between qPCR plates
+│   ├── Data/                                              # qPCR exported files, trait metadata
+│   ├── Figures/                         # All figures generated for telomere/mtDNA
 
 ```
 ### Software
 
-All the analyses were performed in Rstudio version 2024.12.1. The packages needed for each analysis are specified in the corresponding script.
+All the analyses were performed in Rstudio Version 2025.09.0. The packages needed for each analysis are specified in the corresponding script.
