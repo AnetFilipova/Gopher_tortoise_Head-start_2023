@@ -605,9 +605,9 @@ combined_body_growth <- (body_size + theme(legend.position = "none")) /
   (growth_rate + theme(legend.position = "none")) +
   plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold", size = 25),
-        plot.tag.position = c(0.15, 0.98),
-        axis.text = element_text(size = 15),
-        axis.title = element_text(size = 22, face = "bold"))
+        plot.tag.position = c(0.02, 0.98),
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 36, face = "bold"))
 
 # Create a standalone legend by making a small dummy plot and extracting its legend
 legend_plot <- ggplot(data.frame(
