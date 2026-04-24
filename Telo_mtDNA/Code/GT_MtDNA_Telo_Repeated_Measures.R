@@ -2175,21 +2175,20 @@ ggsave(combined_plot_mtdna, file = "Telo_mtDNA/Figures/mtDNA_Correlation_Growth_
        width = 9, height = 15, dpi = 600)
 
 ######## Combining both Telomeres_Correlation_Growth_Rate and mtDNA_Correlation_Growth_Rate in one panel ###
-
 library(cowplot)
 library(grid)
 
 # Helper theme for tag styling
 tag_theme <- theme(
-  plot.tag = element_text(face = "bold", size = 18),
-  plot.tag.position = c(0.25, 0.98)
+  plot.tag = element_text(face = "bold", size = 19),
+  plot.tag.position = c(-0.02, 0.98)
 )
 
 # --- Row 1: Winter 2023 ---
 p1_telo <- Telo_Cor_Winter_2023 +
   labs(x = NULL, y = NULL, tag = "A") +
   theme(legend.position = "none",
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 30, 5, 10)) +
   tag_theme
 
 p1_mtdna <- mtDNA_Cor_Winter_2023 +
@@ -2199,33 +2198,33 @@ p1_mtdna <- mtDNA_Cor_Winter_2023 +
         legend.title = element_text(size = 17, face = "bold"),
         legend.text = element_text(size = 16),
         legend.key.size = unit(1.2, "lines"),
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 10, 5, 30)) +
   tag_theme
 
 # --- Row 2: Early Spring 2024 ---
 p2_telo <- Telo_Cor_Early_Spring_2024 +
   labs(x = NULL, y = NULL, tag = "B") +
   theme(legend.position = "none",
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 30, 5, 10)) +
   tag_theme
 
 p2_mtdna <- mtDNA_Cor_Early_Spring_2024 +
   labs(x = NULL, y = NULL, tag = "E") +
   theme(legend.position = "none",
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 10, 5, 30)) +
   tag_theme
 
 # --- Row 3: Late Spring 2024 ---
 p3_telo <- Telo_Cor_Late_Spring_2024 +
   labs(x = NULL, y = NULL, tag = "C") +
   theme(legend.position = "none",
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 30, 5, 10)) +
   tag_theme
 
 p3_mtdna <- mtDNA_Cor_Late_Spring_2024 +
   labs(x = NULL, y = NULL, tag = "F") +
   theme(legend.position = "none",
-        plot.margin = margin(5, 10, 5, 10)) +
+        plot.margin = margin(5, 10, 5, 30)) +
   tag_theme
 
 # Column headers
@@ -2233,29 +2232,32 @@ col_header_telo <- wrap_elements(
   grid::textGrob("Change in telomere length (T/S)",
                  gp = grid::gpar(fontsize = 18, fontface = "bold"))
 )
+
 col_header_mtdna <- wrap_elements(
   grid::textGrob("Change in mtDNA density (mtDNA/S)",
+                 x = 0.55,
                  gp = grid::gpar(fontsize = 18, fontface = "bold"))
 )
-
 # Row labels (rotated, pushed close to panels)
 row_label_winter <- wrap_elements(
   grid::textGrob("Winter 2023\n(ED – BD)",
                  rot = 90,
                  x = 0.9,
-                 gp = grid::gpar(fontsize = 18, fontface = "bold"))
+                 gp = grid::gpar(fontsize = 21, fontface = "bold"))
 )
+
 row_label_early <- wrap_elements(
   grid::textGrob("Early Spring 2024\n(3wkPD – ED)",
                  rot = 90,
                  x = 0.9,
-                 gp = grid::gpar(fontsize = 18, fontface = "bold"))
+                 gp = grid::gpar(fontsize = 21, fontface = "bold"))
 )
+
 row_label_late <- wrap_elements(
   grid::textGrob("Late Spring 2024\n(3moPD – 3wkPD)",
                  rot = 90,
                  x = 0.9,
-                 gp = grid::gpar(fontsize = 18, fontface = "bold"))
+                 gp = grid::gpar(fontsize = 21, fontface = "bold"))
 )
 
 # Empty spacer for top-left corner
@@ -2269,7 +2271,7 @@ main_grid <-
   (row_label_late   | p3_telo | p3_mtdna) +
   plot_layout(
     heights = c(0.08, 1, 1, 1),
-    widths  = c(1, 1, 1)
+    widths  = c(0.3, 1, 1)  # <-- only change: reduced from 1 to 0.3
   ) &
   theme(plot.background = element_blank(),
         panel.background = element_blank())
@@ -2278,7 +2280,7 @@ main_grid <-
 x_label <- ggdraw() +
   draw_label("Growth rate (g/day)", 
              x = 0.67, y = 0.5,
-             fontface = "bold", size = 18) +
+             fontface = "bold", size = 21) +
   theme_void() +
   theme(plot.background = element_blank(),
         panel.background = element_blank())
@@ -2289,11 +2291,12 @@ final_plot <- plot_grid(
   x_label,
   ncol = 1,
   rel_heights = c(1, 0.03)
-)
+) + theme(plot.margin = margin(5, 10, 5, -10))
 
 final_plot
 
 # Save
 ggsave(final_plot,
        file = "Telo_mtDNA/Figures/Combined_Telomere_mtDNA_Correlation_Growth_Rate.png",
-       width = 14, height = 15, dpi = 600)
+       width = 16, height = 15, dpi = 600,
+       bg = "white")
