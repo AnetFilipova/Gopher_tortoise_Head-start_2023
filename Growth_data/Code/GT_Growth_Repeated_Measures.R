@@ -18,6 +18,7 @@ cbbPalette <- c("#0072B2", "#D55E00")
 #### Data Preparation ####
 datum <- read.csv("Growth_data/Data/Growth_data_Working.csv", na.strings = "na")
 
+
 # Filter out non-viable individuals
 datum <- subset(datum, !(Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01","GT2023_N05.06", "GT2023_N15.04")))
 
@@ -28,10 +29,10 @@ datum <- subset(datum, !(Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01","GT202
 # Prepare data in long format with experimental days
 body_size_full <- datum %>%
   select(Tortoise_ID, Treatment, Nest_ID, Tank, 
-         CL_10, CL_15, CL_16, CL_19, CL_20,
+         CL_10, CL_15, CL_16, CL_19, CL_20, CL_21,
          ExpDay_measure10_Before, ExpDay_measure15_During, 
          ExpDay_measure16_3_Weeks_Post, ExpDay_measure19_3_Months_Post,
-         ExpDay_measure20_1_Year_Post) %>%
+         ExpDay_measure20_1_Year_Post, ExpDay_measure21_2_Year_Post) %>%
   pivot_longer(
     cols = starts_with("CL_"), 
     names_to = "Timepoint", 
@@ -43,17 +44,20 @@ body_size_full <- datum %>%
       Timepoint == "CL_15" ~ ExpDay_measure15_During,
       Timepoint == "CL_16" ~ ExpDay_measure16_3_Weeks_Post,
       Timepoint == "CL_19" ~ ExpDay_measure19_3_Months_Post,
-      Timepoint == "CL_20" ~ ExpDay_measure20_1_Year_Post
+      Timepoint == "CL_20" ~ ExpDay_measure20_1_Year_Post,
+      Timepoint == "CL_21" ~ ExpDay_measure21_2_Year_Post
     ),
     Julian_day_centered = Julian_day - min(Julian_day, na.rm = TRUE),
     Treatment = as.factor(Treatment),
     Nest_ID = as.factor(Nest_ID),
     Tank = as.factor(Tank),
     Tortoise_ID = as.factor(Tortoise_ID),
-    Timepoint = factor(Timepoint, levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20"))
+    Timepoint = factor(Timepoint, levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20", "CL_21"))
   ) %>%
   filter(!is.na(SCL) & !is.na(Julian_day)) %>%
   select(-starts_with("ExpDay_"))
+
+body_size_full$Timepoint
 
 #### Fit Random Slopes Model ####
 
@@ -145,7 +149,8 @@ body_size_full <- body_size_full %>%
     Timepoint == "CL_15" ~ 1,
     Timepoint == "CL_16" ~ 2,
     Timepoint == "CL_19" ~ 3,
-    Timepoint == "CL_20" ~ 4
+    Timepoint == "CL_20" ~ 4,
+    Timepoint == "CL_21" ~ 5,
   ))
 
 ## Timepoint_numeric is a continuous vs. Timepoint is categorical
@@ -162,6 +167,13 @@ print(emm_by_time)
 pairs_by_time <- pairs(emm_by_time)
 print(pairs_by_time)
 
+## Explore how many animals have data for CL_21 and how many belong to Cold-Dormancy or Constant-Warmth treatment
+## Cold-Dormancy--> n=7, Constant-Warmth--> n=9
+
+body_size_full %>%
+  filter(Timepoint == "CL_21") %>%
+  count(Treatment)
+
 # 3. Test effect of time within each treatment
 emm_time_by_treatment <- emmeans(model_scl_categorical, ~ Timepoint | Treatment)
 print(emm_time_by_treatment)
@@ -175,10 +187,11 @@ ch_rate <- slopes_original$Julian_day_scaled.trend[slopes_original$Treatment == 
 percent_diff <- ((ch_rate - cd_rate) / cd_rate) * 100
 
 confint(pairs_by_time)
-### The 95% C.I. for End-Dormancy is ± 4.95 ((-15.010-(-10.06)))
-### The 95% C.I. for 3-Week Post-Dormancy is ± 6.34 (-11.62-(-17.963))
-### The 95% C.I. for 3-Month Post-Dormancy is ± 7.93 (-7.41-(-15.339))
-### The 95% C.I. for 1.5-Year Post-Dormancy is ± 11.17 ((-8.14-(-19.309)))
+### The 95% C.I. for End-Dormancy is ± 2.464 (-9.99-(-14.918))/2
+### The 95% C.I. for 3-Week Post-Dormancy is ± 3.02 (-11.69-(-17.730))/2
+### The 95% C.I. for 3-Month Post-Dormancy is ± 3.7255 (-7.57-(-15.021))/2
+### The 95% C.I. for 1.5-Year Post-Dormancy is ± 5.4175 (-7.87-(-18.705))/2
+### The 95% C.I. for 2.5-Year Post-Dormancy is ± 6.635 (-5.66-(-18.930 ))/2
 
 ##############################################################################
 #### Visualizations ####
@@ -236,8 +249,8 @@ body_size_plot <- body_size_full %>%
     Treatment_plot = ifelse(Timepoint == "CL_10", "Combined", as.character(Treatment)),
     Treatment_plot = factor(Treatment_plot, levels = c("Combined", "Cold dormancy", "Constant heat")),
     Timepoint_label = factor(Timepoint, 
-                             levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20"),
-                             labels = c("BD", "ED", "3wkPD", "3moPD", "1.5yrPD"))  # Updated labels
+                             levels = c("CL_10", "CL_15", "CL_16", "CL_19", "CL_20", "CL_21"),
+                             labels = c("BD", "ED", "3wkPD", "3moPD", "1.5yrPD", "2.5yrPD"))  # Updated labels
   )
 # Updated colors to match growth rate plot (use cbbPalette[6] and [7])
 colors_plot <- c("Combined" = "gray70", 
@@ -246,10 +259,10 @@ colors_plot <- c("Combined" = "gray70",
 
 sig_by_timepoint <- summary(pairs_by_time)
 sig_labels_box <- data.frame(
-  Timepoint = c("CL_15", "CL_16", "CL_19", "CL_20"),
-  Timepoint_label = factor(c("ED", "3wkPD", "3moPD", "1.5yrPD"),
-                           levels = c("BD", "ED", "3wkPD", "3moPD", "1.5yrPD")),
-  stars = sapply(2:5, function(i) {  # Changed from 1:4 to 2:5 to skip CL_10
+  Timepoint = c("CL_15", "CL_16", "CL_19", "CL_20", "CL_21"),
+  Timepoint_label = factor(c("ED", "3wkPD", "3moPD", "1.5yrPD", "2.5yrPD"),
+                           levels = c("BD", "ED", "3wkPD", "3moPD", "1.5yrPD", "2.5yrPD")),
+  stars = sapply(2:6, function(i) {
     p <- sig_by_timepoint$p.value[i]
     ifelse(p < 0.0001, "****",
            ifelse(p < 0.001, "***",
@@ -267,7 +280,7 @@ sig_labels_box$y_pos <- ypos
 sig_labels_box$line_y <- line_y
 
 # Add numeric x positions for lines (matching the timepoint positions)
-sig_labels_box$x_num <- c(2, 3, 4, 5)  # Positions for Dormancy end, 3-Wk, 3-Mo, 1.5-Yr
+sig_labels_box$x_num <- c(2, 3, 4, 5, 6)  # Positions for ED, 3-Wk, 3-Mo, 1.5-Yr, 2.5-Yr
 
 body_size <- ggplot(body_size_plot, aes(x = Timepoint_label, y = SCL)) +
   # Before (CL_10) - gray filled box
@@ -336,6 +349,7 @@ body_size_full %>%
   count(Nest_ID, Treatment) %>%
 print(n = Inf)
 
+
 ##############################################################################
 #### ANALYSIS: GROWTH RATE across intervals ####
 ##############################################################################
@@ -345,7 +359,7 @@ growth_rate_full <- datum %>%
   select(Tortoise_ID, Treatment, Nest_ID, Tank,
          Growth_rate_Before, Growth_rate_During, 
          Growth_rate_3_Weeks_Post, Growth_rate_3_Months_Post,
-         Growth_rate_1.5_Year_Post) %>%
+         Growth_rate_1.5_Year_Post, Growth_rate_2.5_Year_Post) %>%
   pivot_longer(
     cols = starts_with("Growth_rate_"),
     names_to = "Interval",
@@ -359,7 +373,7 @@ growth_rate_full <- datum %>%
     Interval = factor(Interval, 
                       levels = c("Growth_rate_Before", "Growth_rate_During",
                                  "Growth_rate_3_Weeks_Post", "Growth_rate_3_Months_Post",
-                                 "Growth_rate_1.5_Year_Post"))
+                                 "Growth_rate_1.5_Year_Post", "Growth_rate_2.5_Year_Post"))
   ) %>%
   filter(!is.na(Growth_rate))
 
@@ -439,10 +453,11 @@ pairs(emm_treatment)
 
 confint(pairs_by_interval)
 
-### The 95% C.I. for Winter 2023 is ± 0.31 (-0.4062-(-0.717))
-### The 95% C.I. for Early Sprin 2024 is ± 0.31 (-0.4865-(-0.797))
-### The 95% C.I. for Late Spring 2024 is ± 0.31 (0.0832-(-0.228))
-### ### The 95% C.I. for Summer 2025 is ± 0.48 (0.2068-(-0.271))
+### The 95% C.I. for Winter 2023 is ± 0.1488 (-0.4137-(-0.7113))/2
+### The 95% C.I. for Early Spring 2024 is ± 0.1488 (-0.4940-(-0.7916))/2
+### The 95% C.I. for Late Spring 2024 is ± 0.1488 (0.0757-(-0.2219))/2
+### The 95% C.I. for Summer 2025 is ± 0.4725 (0.2070-(-0.2655))
+### The 95% C.I. for Summer 2026 is ± 0.2645 (0.2909-(-0.2381))/2
 
 ##############################################################################
 #### Visualizations ####
@@ -456,7 +471,7 @@ growth_rate_long <- datum %>%
   filter(!Tortoise_ID %in% c("Not_Viable", "GT2023_N06.01", "GT2023_N05.06", "GT2023_N15.04")) %>%
   select(Tortoise_ID, Treatment, Nest_ID, Tank, 
          Growth_rate_Before, Growth_rate_During, Growth_rate_3_Weeks_Post, 
-         Growth_rate_3_Months_Post, Growth_rate_1.5_Year_Post) %>%
+         Growth_rate_3_Months_Post, Growth_rate_1.5_Year_Post, Growth_rate_2.5_Year_Post) %>%
   pivot_longer(
     cols = starts_with("Growth_rate_"),
     names_to = "Timepoint",
@@ -469,6 +484,7 @@ growth_rate_long <- datum %>%
       Timepoint == "Growth_rate_3_Weeks_Post" ~ "Early Spring 2024\n(3wkPD – ED)",
       Timepoint == "Growth_rate_3_Months_Post" ~ "Late Spring 2024\n(3moPD – 3wkPD)",
       Timepoint == "Growth_rate_1.5_Year_Post" ~ "Summer 2025\n(1.5yrPD – 3moPD)",
+      Timepoint == "Growth_rate_2.5_Year_Post" ~ "Summer 2026\n(2.5yrPD – 1.5yrPD)",
       TRUE ~ Timepoint
     ),
     Timepoint = factor(
@@ -478,7 +494,8 @@ growth_rate_long <- datum %>%
         "Winter 2023\n(ED – BD)", 
         "Early Spring 2024\n(3wkPD – ED)", 
         "Late Spring 2024\n(3moPD – 3wkPD)", 
-        "Summer 2025\n(1.5yrPD – 3moPD)"
+        "Summer 2025\n(1.5yrPD – 3moPD)",
+        "Summer 2026\n(2.5yrPD – 1.5yrPD)"
       )
     )
   )
@@ -595,53 +612,56 @@ fisher.test(survival_table)
 # Constant-Warmth
 11/29*100 ## %37.9%
 
+
+###################################
+# Test for treatment effect on survival (recapture in the wild) at 2.5 years post-dormancy
+##################################
+
+# Cold-Dormancy:   28 released, 7 recaptured, 21 not recaptured
+# Constant-Warmth: 29 released, 9 recaptured, 20 not recaptured
+
+survival_table_2026 <- matrix(c(7, 21,     # Cold-Dormancy row
+                                9, 20),   # Constant-Warmth row
+                              nrow = 2, 
+                              byrow = TRUE,
+                              dimnames = list(
+                                Treatment = c("Cold-Dormancy", "Constant-Warmth"),
+                                Status    = c("Recaptured", "Not recaptured")
+                              ))
+
+survival_table_2026
+
+fisher.test(survival_table_2026)
+
+# Percentage recaptured (cumulative, out of original release)
+7/28*100   # Cold-Dormancy: 25.0%
+9/29*100   # Constant-Warmth: 31.0%
+
 ######## Combine Body Size and Growth Rate into two-panel figure ########
+
 library(patchwork)
 library(cowplot)
 library(grid)
 
-# Remove legends from both panels
+# Panel A: legend off
+# Panel B: keep its own legend, moved inside the panel (top-right area) to remove the extra legend column
 combined_body_growth <- (body_size + theme(legend.position = "none")) / 
-  (growth_rate + theme(legend.position = "none")) +
+  (growth_rate + theme(legend.position = "inside",
+                       legend.position.inside = c(0.90, 0.85),  # x,y as fraction of panel B (top-right-ish)
+                       legend.background = element_rect(fill = "white"),
+                       legend.title = element_text(size = 17, face = "bold"),
+                       legend.text = element_text(size = 16),
+                       axis.text.x = element_text(size = 10))) +   # smaller, just for panel B
   plot_annotation(tag_levels = 'A') &
   theme(plot.tag = element_text(face = "bold", size = 25),
         plot.tag.position = c(0.02, 0.98),
-        axis.text = element_text(size = 16),
+        axis.text.y = element_text(size = 16),      # shared y-axis size still fine
         axis.title = element_text(size = 36, face = "bold"))
 
-# Create a standalone legend by making a small dummy plot and extracting its legend
-legend_plot <- ggplot(data.frame(
-  Treatment = factor(c("Cold-Dormancy", "Constant-Warmth"), 
-                     levels = c("Cold-Dormancy", "Constant-Warmth")),
-  x = c(1, 2), y = c(1, 2)
-), aes(x = Treatment, y = y, color = Treatment)) +
-  geom_boxplot(fill = "white", linewidth = 0.8) +
-  geom_point(size = 3) +
-  scale_color_manual(
-    values = c("Cold-Dormancy" = "#0072B2", "Constant-Warmth" = "#D55E00"),
-    name = "Treatment"
-  ) +
-  theme(
-    legend.title = element_text(size = 17, face = "bold"),
-    legend.text = element_text(size = 16),
-    legend.key = element_blank(),
-    legend.background = element_blank(),
-    plot.background = element_blank(),
-    panel.background = element_blank()
-  )
-
-# Extract just the legend from that dummy plot
-shared_legend <- cowplot::get_legend(legend_plot)
-
-# Combine: main figure on the left, legend on the right (wider legend column)
-final_figure <- ggdraw() +
-  draw_plot(combined_body_growth, x = 0, y = 0, width = 0.82, height = 1) +
-  draw_plot(shared_legend, x = 0.82, y = 0.48, width = 0.18, height = 0.2)
-
-final_figure
+combined_body_growth
 
 # Save
-ggsave(final_figure, 
+ggsave(combined_body_growth, 
        file = "Growth_data/Figures/Combined_Body_Size_Growth_Rate.png",
        width = 14, height = 15, dpi = 600,
        bg = "white")
