@@ -41,7 +41,7 @@ Please use the following DOI to cite this data and associated analyses.
 ```
 ### Software
 
-All the analyses were performed in Rstudio Version 2025.09.0. The packages needed for each analysis are specified in the corresponding script.
+All the analyses were performed in Rstudio Version 2026.09.0. The packages needed for each analysis are specified in the corresponding script.
 
 <img width="256" height="240" alt="tortoise" src="https://github.com/user-attachments/assets/225eacfe-3eec-4469-9ac2-07f62042634e" />
 
