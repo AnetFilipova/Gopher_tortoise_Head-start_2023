@@ -1,6 +1,6 @@
-### Exploring the effects of first year cold-dormancy on the phenotypic, molecular and metabolic responses in head-started Gopher tortoises (*Gopherus polyphemus*). ###
+### First cold dormancy has a persistent effect on body size but only pauses growth rate and metabolic processes, with no catch-up growth ###
 
-This repository contains data and code for exploring differences in: body size, growth rate, change in telomere lenght, and metabolic measures (mitochondrial DNA density, glucose, triglycerides and CoA) between two treatments of head-started Gopher tortoises from Alabama, US. The two treatments are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
+This repository contains data and code for exploring differences in: body size, growth rate, change in telomere lenght, and metabolic measures (mitochondrial DNA density, glucose, triglycerides and coenzyme A) between two treatments of head-started Gopher tortoises from Alabama, US. The two treatments are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
 Data, code and results can be found within the folder for each respective analysis.
 
 ### Citation
@@ -27,8 +27,8 @@ Please use the following DOI to cite this data and associated analyses.
 │
 ├── Metabolites/
 |   ├── Code/
-│   │   └── GT_Metabolites_Analysis_Repeated_Measures.R    # Analysis for metabolite measures (glucose, triglycerides, glucose)
-│   ├── Data/                                              # Masterdatasets for each metabolite separately + triglyceride dilution linearity
+│   │   └── GT_Metabolites_Analysis_Repeated_Measures.R    # Analysis for metabolite measures (glucose, triglycerides, coenzyme A)
+│   ├── Data/                                              # Master datasets for each metabolite separately + triglyceride dilution linearity
 │   ├── Figures/                                           # All the figures produced for the metabolite measures
 │
 ├── Telo_mtDNA/
