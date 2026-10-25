@@ -1,6 +1,6 @@
 ### Exploring the effects of first year cold-dormancy on the phenotypic, molecular and metabolic responses in head-started Gopher tortoises (*Gopherus polyphemus*). ###
 
-This repository contains data and code for exploring differences in: body size, growth rate, change in telomere lenght, and metabolic measures (mitochondrial DNA density, glucose, triglycerides and acetyl CoA) between two treatments of head-started Gopher tortoises from Alabama, US. The two treatments are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
+This repository contains data and code for exploring differences in: body size, growth rate, change in telomere lenght, and metabolic measures (mitochondrial DNA density, glucose, triglycerides and CoA) between two treatments of head-started Gopher tortoises from Alabama, US. The two treatments are: **Constant-Warmth**, i.e. animals that were raised under standard Alabama constant greenhouse conditions for the whole study period of 11 months, and **Cold-Dormancy**, i.e. animals that experienced a period of simulated winter dormancy for ~2 months. 
 Data, code and results can be found within the folder for each respective analysis.
 
 ### Citation
@@ -41,7 +41,7 @@ Please use the following DOI to cite this data and associated analyses.
 ```
 ### Software
 
-All the analyses were performed in Rstudio Version 2025.09.0. The packages needed for each analysis are specified in the corresponding script.
+All the analyses were performed in Rstudio Version 2026.09.0. The packages needed for each analysis are specified in the corresponding script.
 
 <img width="256" height="240" alt="tortoise" src="https://github.com/user-attachments/assets/225eacfe-3eec-4469-9ac2-07f62042634e" />
 
