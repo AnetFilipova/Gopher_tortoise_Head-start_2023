@@ -733,7 +733,7 @@ ECOA_Plot <- ggplot(ECOA_Master_Dataset, aes(x = Treatment, y = ECOA, color = Tr
   ) +
   labs(
     x = "Treatment group",
-    y = "Acetyl-CoA (AU)"
+    y = "Coenzyme A (AU)"
   ) +
   theme_classic() +
   theme(
@@ -749,7 +749,7 @@ ECOA_Plot <- ggplot(ECOA_Master_Dataset, aes(x = Treatment, y = ECOA, color = Tr
 
 ECOA_Plot
 
-ggsave(ECOA_Plot, file="Metabolites/Figures/Acetyl-CoA.png", width=9, height=7, dpi=600)
+ggsave(ECOA_Plot, file="Metabolites/Figures/CoA.png", width=9, height=7, dpi=600)
 
 # Calculate sample size per treatment
 sample_size_per_treatment_ECOA <- ECOA_Master_Dataset %>%
@@ -1034,7 +1034,7 @@ ggsave(Glucose_Plot, file="Metabolites/Figures/Glucose.png", width=9, height=7, 
 
 
 
-####### Combining the 4 separate figures for mtDNA_Treatment, Glucose, Triglycerides and Acetyl-CoA into one 4-panel figure
+####### Combining the 4 separate figures for mtDNA_Treatment, Glucose, Triglycerides and CoA into one 4-panel figure
 ## this object comes from the Telo_mtDNA script so we're importing it
 mtdna_plot <- readRDS("Telo_mtDNA/Figures/mtdna_plot.rds")
 
