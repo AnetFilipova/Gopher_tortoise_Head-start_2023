@@ -581,36 +581,37 @@ table(datum$Treatment)
 
 
 ###################################
-# Test for treatment effect on survival (recapture in the wild) at 1.5 years post-dormancy
-##################################
+# Test for treatment effect on survival (known alive in the wild) at 1.5 years post-dormancy
+# Animals caught in 2026 but missed in 2025 are counted as alive in 2025
+###################################
 
-# Cold-Dormancy:   28 released, 9 recaptured, 19 not recaptured
-# Constant-Warmth: 29 released, 11 recaptured, 18 not recaptured
+surv_dat <- datum %>%
+  select(Tortoise_ID, Treatment, CL_20, CL_21) %>%
+  mutate(
+    caught_2025 = !is.na(CL_20),
+    caught_2026 = !is.na(CL_21),
+    alive_2025  = caught_2025 | caught_2026
+  )
 
-survival_table <- matrix(c(9, 19,     # Cold-Dormancy row
-                           11, 18),   # Constant-Warmth row
-                         nrow = 2, 
-                         byrow = TRUE,
-                         dimnames = list(
-                           Treatment = c("Cold-Dormancy", "Constant-Warmth"),
-                           Status    = c("Recaptured", "Not recaptured")
-                         ))
+# Which animals were added back into 2025? (should be 2)
+surv_dat %>% filter(alive_2025 & !caught_2025) %>% select(Tortoise_ID, Treatment)
+
+# Build the table: rows = treatment, columns = Alive / Not known alive
+survival_table <- table(
+  Treatment = surv_dat$Treatment,
+  Status    = factor(surv_dat$alive_2025,
+                     levels = c(TRUE, FALSE),
+                     labels = c("Known alive", "Not known alive"))
+)
 
 # View the table to confirm it looks right before testing
 survival_table
 
 ## Fisher's exact test
-# Tests whether recapture probability differs between treatments
-# Returns: p-value, odds ratio, and 95% CI for the odds ratio
 fisher.test(survival_table)
 
-## Calculate the percentage of recaptured animals in the field
-
-# Cold-Dormancy
-9/28*100 ## 32.1%
-
-# Constant-Warmth
-11/29*100 ## %37.9%
+## Percentage known alive in Summer 2025
+round(prop.table(survival_table, margin = 1) * 100, 1)
 
 
 ###################################
